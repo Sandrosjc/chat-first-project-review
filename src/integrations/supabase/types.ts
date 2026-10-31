@@ -146,7 +146,7 @@ export type Database = {
           google_play_url?: string | null
           id?: string
           is_featured?: boolean
-          payhip_url?: string
+          payhip_url?: string | null
           price?: string
           slug?: string
           subtitle?: string
