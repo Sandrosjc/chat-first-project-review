@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -12,7 +13,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { I18nProvider } from "@/lib/i18n";
+import { I18nProvider, useI18n } from "@/lib/i18n";
+import { recordPageView } from "@/lib/analytics.functions";
 import { SiteHeader, SiteFooter } from "@/components/site/Layout";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -120,6 +122,11 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+  const { lang } = useI18n();
+  useEffect(() => {
+    void recordPageView({ data: { path: location.pathname, language: lang } });
+  }, [location.pathname, lang]);
 
   return (
     <QueryClientProvider client={queryClient}>
