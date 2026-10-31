@@ -98,8 +98,16 @@ export function FreeGuideBox() {
     }
   };
   return (
-    <section className="relative overflow-hidden rounded-[1.5rem] border border-gold/50 bg-card p-8 shadow-soft md:p-10">
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">FREE MINI E-BOOK · PDF</p>
+    <section className="relative overflow-hidden rounded-[1.5rem] border border-gold/50 bg-card shadow-soft md:grid md:grid-cols-[0.85fr_1.15fr]">
+      <div className="relative flex min-h-64 flex-col justify-center overflow-hidden bg-secondary p-8 text-secondary-foreground md:p-10">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-56 w-56 rounded-full border border-gold/30" />
+        <div className="pointer-events-none absolute -bottom-24 -left-12 h-56 w-56 rounded-full border border-gold/20" />
+        <p className="relative text-xs font-semibold uppercase tracking-[0.25em] text-gold">FREE MINI E-BOOK · PDF</p>
+        <p className="relative mt-5 max-w-xs font-display text-4xl leading-tight md:text-5xl">A gentle start for your hair-care journey.</p>
+        <p className="relative mt-4 text-sm text-secondary-foreground/75">A practical gift from Chequetto.</p>
+      </div>
+      <div className="p-8 md:p-10">
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">Your complimentary guide</p>
       <h2 className="mt-3 font-display text-3xl text-primary md:text-4xl">{t("guideTitle")}</h2>
       <p className="mt-3 max-w-xl leading-7 text-muted-foreground">{t("guideText")}</p>
       {done ? <p className="mt-6 font-medium text-secondary">{t("guideOk")}</p> : (
@@ -114,6 +122,7 @@ export function FreeGuideBox() {
           </label>
         </form>
       )}
+      </div>
     </section>
   );
 }
