@@ -6,10 +6,10 @@ import { toast } from "sonner";
 
 type Product = {
   id?: string; slug: string; title: string; subtitle: string; description: string;
-  price: string; cover_image_url: string; payhip_url: string; google_play_url: string;
+  price: string; cover_image_url: string; product_url: string; payhip_url: string; google_play_url: string;
   download_url: string; is_free: boolean; is_featured: boolean;
 };
-const empty: Product = { slug:"", title:"", subtitle:"", description:"", price:"", cover_image_url:"", payhip_url:"", google_play_url:"", download_url:"", is_free:false, is_featured:false };
+const empty: Product = { slug:"", title:"", subtitle:"", description:"", price:"", cover_image_url:"", product_url:"", payhip_url:"", google_play_url:"", download_url:"", is_free:false, is_featured:false };
 
 export const Route = createFileRoute("/admin")({ component: AdminPage });
 
@@ -51,7 +51,7 @@ function AdminPage() {
         if (error) throw error;
         coverUrl = supabase.storage.from("ebook-covers").getPublicUrl(path).data.publicUrl;
       }
-      await saveAdminEbook({ data: { ...form, cover_image_url: coverUrl, payhip_url: form.payhip_url || null, google_play_url: form.google_play_url || null, download_url: form.download_url || null } });
+      await saveAdminEbook({ data: { ...form, cover_image_url: coverUrl, product_url: form.product_url || null, payhip_url: form.payhip_url || null, google_play_url: form.google_play_url || null, download_url: form.download_url || null } });
       setForm(empty); setCover(null); await load(); toast.success("Produto salvo.");
     } catch (e) { toast.error(e instanceof Error ? e.message : "Não foi possível salvar."); }
     finally { setBusy(false); }
@@ -71,7 +71,7 @@ function AdminPage() {
       {field("Título","title",true)}{field("Identificador (slug)","slug",true)}{field("Subtítulo","subtitle")}{field("Preço","price")}
       <label className="grid gap-1 text-sm md:col-span-2">Descrição<textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} rows={4} className="rounded border bg-background p-2"/></label>
       <label className="grid gap-1 text-sm md:col-span-2">Imagem da capa<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>setCover(e.target.files?.[0] ?? null)}/></label>
-      {field("Link Payhip (venda)","payhip_url")}{field("Link Google Play Books","google_play_url")}
+      {field("Link principal de venda ou acesso","product_url")}{field("Link Payhip (opcional)","payhip_url")}{field("Link Google Play Books (opcional)","google_play_url")}
       {field("Link de acesso/download (guia grátis)","download_url")}
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_free} onChange={e=>setForm({...form,is_free:e.target.checked,price:e.target.checked?"Grátis":form.price})}/>Este é o único guia gratuito</label>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_featured} onChange={e=>setForm({...form,is_featured:e.target.checked})}/>Destacar no site</label>
