@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
-import { ebooks, posts, type Ebook } from "@/lib/content";
+import { posts, type Ebook } from "@/lib/content";
 import { subscribeLead } from "@/lib/leads.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
@@ -15,7 +15,7 @@ const toneClass: Record<Ebook["tone"], string> = {
   gold: "bg-gold text-foreground",
 };
 
-type CatalogBook = Ebook & { coverImageUrl?: string | null; productUrl?: string | null; googlePlayUrl?: string | null; description?: string; isFree?: boolean; downloadUrl?: string | null };
+type CatalogBook = Ebook & { coverImageUrl?: string | null; productUrl?: string | null; googlePlayUrl?: string | null; description?: string };
 
 export function EbookCard({ book }: { book: CatalogBook }) {
   const { t } = useI18n();
@@ -24,9 +24,9 @@ export function EbookCard({ book }: { book: CatalogBook }) {
       {book.coverImageUrl ? <img src={book.coverImageUrl} alt={`Cover of ${book.title}`} loading="lazy" className="aspect-[3/4] w-full rounded-md object-cover" /> : <div className={`flex aspect-[3/4] flex-col justify-between rounded-md p-6 ${toneClass[book.tone]}`}><span className="text-xs uppercase tracking-[0.3em] opacity-80">Chequetto</span><span className="font-display text-3xl leading-tight">{book.title}</span></div>}
       <h3 className="mt-4 font-display text-xl">{book.title}</h3>
       <p className="mt-1 flex-1 text-sm text-muted-foreground">{book.description || book.subtitle}</p>
-      <p className="mt-3 font-semibold text-primary">{book.isFree ? "Grátis" : book.price}</p>
+      <p className="mt-3 font-semibold text-primary">{book.price}</p>
       <div className="mt-4 grid gap-2">
-        {book.isFree && book.downloadUrl ? <a href={book.downloadUrl} target="_blank" rel="noopener noreferrer" className="rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground hover:opacity-90">Baixar guia grátis</a> : (book.productUrl || book.payhipUrl) ? <a href={book.productUrl || book.payhipUrl} target="_blank" rel="noopener noreferrer" className="rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground hover:opacity-90">{t("buyPayhip")}</a> : null}
+        {book.productUrl || book.payhipUrl ? <a href={book.productUrl || book.payhipUrl} target="_blank" rel="noopener noreferrer" className="rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground hover:opacity-90">{t("buyPayhip")}</a> : null}
         {book.googlePlayUrl && <a href={book.googlePlayUrl} target="_blank" rel="noopener noreferrer" className="rounded-md border border-primary px-4 py-2 text-center text-sm font-medium text-primary hover:bg-primary/5">{t("googlePlay")}</a>}
       </div>
     </article>
@@ -34,24 +34,24 @@ export function EbookCard({ book }: { book: CatalogBook }) {
 }
 
 export function EbookGrid() {
-  const [books, setBooks] = useState<CatalogBook[]>(ebooks);
+  const [books, setBooks] = useState<CatalogBook[]>([]);
   useEffect(() => {
     let active = true;
     supabase.from("ebooks").select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, download_url, is_free, is_featured")
-      .order("is_featured", { ascending: false }).order("created_at", { ascending: false })
+      .eq("is_free", false).order("is_featured", { ascending: false }).order("created_at", { ascending: false }).limit(3)
       .then(({ data, error }) => {
-        if (!active || error || !data?.length) return;
+        if (!active || error) return;
         setBooks(data.map((book, index) => ({
           id: book.id, title: book.title, subtitle: book.subtitle ?? "",
           price: book.price ?? "", payhipUrl: book.payhip_url ?? "",
           googlePlayUrl: book.google_play_url ?? "", productUrl: book.product_url, coverImageUrl: book.cover_image_url,
-          description: book.description ?? "", isFree: book.is_free, downloadUrl: book.download_url,
+          description: book.description ?? "",
           tone: (["primary", "secondary", "gold"] as const)[index % 3],
         })));
       });
     return () => { active = false; };
   }, []);
-  return <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{books.map((b) => <EbookCard key={b.id} book={b} />)}</div>;
+  return <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{books.slice(0, 3).map((b) => <EbookCard key={b.id} book={b} />)}</div>;
 }
 
 export function PostGrid() {
