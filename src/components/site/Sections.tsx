@@ -51,7 +51,7 @@ export function EbookGrid() {
       });
     return () => { active = false; };
   }, []);
-  return <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{books.slice(0, 3).map((b) => <EbookCard key={b.id} book={b} />)}</div>;
+  return <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{books.slice(0, 3).map((b) => <EbookCard key={b.id} book={b} />)}</div>;
 }
 
 export function PostGrid() {
