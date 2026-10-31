@@ -9,6 +9,8 @@ declare
   paid_count integer;
 begin
   if new.is_free = false then
+    -- Serialize paid-product writes so concurrent inserts cannot exceed the limit.
+    perform pg_advisory_xact_lock(hashtext('public.ebooks_paid_limit'));
     select count(*)
       into paid_count
       from public.ebooks
