@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { attachSupabaseAuth } from "@/lib/auth-attacher";
 
 const subscribeSchema = z.object({
   email: z.string().trim().email().max(255),
@@ -50,7 +51,7 @@ async function assertAdmin(supabase: {
 
 // Admin-only: dashboard counters.
 export const getAdminStats = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
     const [leads, active, campaigns, sent] = await Promise.all([
