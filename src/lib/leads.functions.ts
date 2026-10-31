@@ -89,6 +89,12 @@ export const getAdminStats = createServerFn({ method: "GET" })
       context.supabase.from("campaigns").select("id", { count: "exact", head: true }),
       context.supabase.from("campaign_logs").select("id", { count: "exact", head: true }),
     ]);
+    const statsError = leads.error ?? active.error ?? campaigns.error ?? sent.error;
+    if (statsError) {
+      console.error("[leads] dashboard stats failed", statsError);
+      throw new Error("Could not load dashboard statistics.");
+    }
+
     return {
       totalLeads: leads.count ?? 0,
       activeOptedIn: active.count ?? 0,
