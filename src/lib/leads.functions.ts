@@ -5,9 +5,8 @@ import { attachSupabaseAuth } from "@/lib/auth-attacher";
 
 const subscribeSchema = z.object({
   email: z.string().trim().email().max(255),
-  language: z.string().trim().min(2).max(10).default("en"),
+  language: z.enum(["en", "pt", "es", "fr", "de", "it", "nl", "ja", "zh"]).default("en"),
   optedIn: z.boolean().default(false),
-  source: z.string().trim().max(50).default("free_guide"),
 });
 
 // Public endpoint: saves a free-guide subscriber. Runs with the service role
@@ -16,20 +15,11 @@ export const subscribeLead = createServerFn({ method: "POST" })
   .inputValidator((data) => subscribeSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const email = data.email.toLowerCase();
-
-    // A single upsert makes simultaneous registrations for the same email safe.
-    // The database unique constraint on email is the source of truth.
-    const { error } = await supabaseAdmin.from("leads").upsert(
-      {
-        email,
-        language: data.language,
-        opted_in: data.optedIn,
-        source: data.source,
-        status: "active",
-      },
-      { onConflict: "email" },
-    );
+    const { error } = await supabaseAdmin.rpc("register_guide_lead", {
+      p_email: data.email.trim().toLowerCase(),
+      p_language: data.language,
+      p_opted_in: data.optedIn,
+    });
 
     if (error) {
       console.error("[leads] save failed", error);
