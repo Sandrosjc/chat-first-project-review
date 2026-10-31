@@ -1,11 +1,7 @@
-// Catalogue content. In Stage 2 this moves to the database and is edited from /admin.
+// Public catalogue is loaded only from the database; never show placeholder purchase links.
 export type Ebook = { id: string; title: string; subtitle: string; price: string; payhipUrl: string; googlePlayUrl: string; tone: "primary" | "secondary" | "gold" };
 
-export const ebooks: Ebook[] = [
-  { id: "grow", title: "The Growth Ritual", subtitle: "A 90-day plan for longer, fuller hair", price: "$14.90", payhipUrl: "https://payhip.com", googlePlayUrl: "https://play.google.com/store/books", tone: "primary" },
-  { id: "scalp", title: "Scalp First", subtitle: "The foundation of every healthy strand", price: "$12.90", payhipUrl: "https://payhip.com", googlePlayUrl: "https://play.google.com/store/books", tone: "secondary" },
-  { id: "oils", title: "Botanical Oils", subtitle: "Nature's remedies for strength & shine", price: "$11.90", payhipUrl: "https://payhip.com", googlePlayUrl: "https://play.google.com/store/books", tone: "gold" },
-];
+export const ebooks: Ebook[] = [];
 
 export type Post = { slug: string; title: string; excerpt: string; date: string; body: string[] };
 
