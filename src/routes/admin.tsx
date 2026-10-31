@@ -46,6 +46,13 @@ function AdminPage() {
     try {
       let coverUrl = form.cover_image_url || null;
       if (cover) {
+        const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+        if (!allowedTypes.includes(cover.type)) {
+          throw new Error("A capa deve estar em JPG, PNG ou WebP.");
+        }
+        if (cover.size > 5 * 1024 * 1024) {
+          throw new Error("A capa deve ter no máximo 5 MB.");
+        }
         const ext = cover.name.split(".").pop()?.toLowerCase() || "jpg";
         const path = `${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from("ebook-covers").upload(path, cover, { upsert: false, contentType: cover.type });
