@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
 import { ebooks, posts, type Ebook } from "@/lib/content";
+import { subscribeLead } from "@/lib/leads.functions";
 import { useI18n } from "@/lib/i18n";
 import journalImg from "@/assets/journal.jpg";
 
@@ -61,13 +62,22 @@ export function FreeGuideBox() {
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [done, setDone] = useState(false);
-  const submit = (e: FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (!emailSchema.safeParse(email).success) { toast.error(t("emailPh")); return; }
-    // Stage 2: save { email, language: lang, opted_in: consent } to the leads table.
-    void lang; void consent;
-    setDone(true);
-    toast.success(t("guideOk"));
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      await subscribeLead({ data: { email, language: lang, optedIn: consent, source: "free_guide" } });
+      setDone(true);
+      toast.success(t("guideOk"));
+    } catch (error) {
+      console.error("[guide] subscription failed", error);
+      toast.error(lang === "pt" ? "Não foi possível salvar seu e-mail. Tente novamente." : "We couldn't save your email. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <section className="rounded-xl border border-gold/50 bg-card p-8 shadow-soft md:p-10">
@@ -78,7 +88,7 @@ export function FreeGuideBox() {
         <form onSubmit={submit} className="mt-6 grid gap-3">
           <div className="flex flex-col gap-3 sm:flex-row">
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("emailPh")} className="flex-1 rounded-md border border-input bg-background px-4 py-3 outline-none focus:border-primary" />
-            <button className="rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90">{t("getGuide")}</button>
+            <button type="submit" disabled={submitting} className="rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60">{submitting ? (lang === "pt" ? "Enviando..." : "Sending...") : t("getGuide")}</button>
           </div>
           <label className="flex items-start gap-2 text-xs text-muted-foreground">
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 accent-primary" />
