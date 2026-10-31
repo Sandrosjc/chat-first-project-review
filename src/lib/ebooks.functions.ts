@@ -16,6 +16,7 @@ const schema = z.object({
   description: z.string().trim().max(5000).default(""),
   price: z.string().trim().max(40).default(""),
   cover_image_url: z.string().url().nullable().optional(),
+  product_url: z.string().url().nullable().optional(),
   payhip_url: z.string().url().nullable().optional(),
   google_play_url: z.string().url().nullable().optional(),
   download_url: z.string().url().nullable().optional(),
@@ -23,7 +24,7 @@ const schema = z.object({
   is_featured: z.boolean().default(false),
 }).superRefine((v, ctx) => {
   if (v.is_free && !v.download_url) ctx.addIssue({ code: "custom", path: ["download_url"], message: "Informe o link de acesso ao guia gratuito." });
-  if (!v.is_free && !v.payhip_url && !v.google_play_url) ctx.addIssue({ code: "custom", path: ["payhip_url"], message: "Informe pelo menos um link de venda." });
+  if (!v.is_free && !v.product_url && !v.payhip_url && !v.google_play_url) ctx.addIssue({ code: "custom", path: ["payhip_url"], message: "Informe pelo menos um link de venda." });
 });
 
 export const listAdminEbooks = createServerFn({ method: "GET" })
@@ -31,7 +32,7 @@ export const listAdminEbooks = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { data, error } = await context.supabase.from("ebooks")
-      .select("id, slug, title, subtitle, description, price, cover_image_url, payhip_url, google_play_url, download_url, is_free, is_featured, created_at")
+      .select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, download_url, is_free, is_featured, created_at")
       .order("created_at", { ascending: false });
     if (error) throw new Error("Não foi possível carregar os produtos.");
     return data ?? [];
