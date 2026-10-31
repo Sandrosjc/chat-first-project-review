@@ -69,6 +69,7 @@ function AdminPage() {
   return <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-10"><header className="mb-8 flex flex-wrap items-center justify-between gap-3"><h1 className="font-display text-2xl sm:text-3xl">Painel de produtos</h1><button onClick={()=>supabase.auth.signOut()} className="rounded border px-3 py-2 text-sm underline">Sair</button></header>
     <form onSubmit={save} className="mb-10 grid min-w-0 gap-4 rounded-xl border p-4 sm:p-5 md:grid-cols-2">
       <h2 className="font-display text-xl sm:text-2xl md:col-span-2">{form.id ? "Editar produto" : "Cadastrar produto"}</h2>
+      <p className="text-sm text-muted-foreground md:col-span-2">O catálogo público exibe três e-books pagos. Cadastre os três produtos definitivos e mantenha os links de compra atualizados.</p>
       {field("Título","title",true)}{field("Identificador (slug)","slug",true)}{field("Subtítulo","subtitle")}{field("Preço","price",true)}
       <label className="grid gap-1 text-sm md:col-span-2">Descrição<textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} rows={4} className="min-w-0 rounded border bg-background p-2"/></label>
       <label className="grid gap-1 text-sm md:col-span-2">Imagem da capa<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>setCover(e.target.files?.[0] ?? null)} className="min-w-0 max-w-full"/></label>
