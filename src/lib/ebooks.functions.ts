@@ -44,6 +44,23 @@ export const saveAdminEbook = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
     const { id, ...values } = data;
+
+    // The public catalogue is intentionally limited to three paid ebooks.
+    // Enforce the limit on the server so extra items cannot be silently hidden.
+    if (!id) {
+      const { count, error: countError } = await context.supabase
+        .from("ebooks")
+        .select("id", { count: "exact", head: true })
+        .eq("is_free", false);
+      if (countError) {
+        console.error("[ebooks] catalogue limit check failed", countError);
+        throw new Error("Não foi possível verificar o limite do catálogo.");
+      }
+      if ((count ?? 0) >= 3) {
+        throw new Error("O catálogo permite somente três e-books pagos. Edite um produto existente.");
+      }
+    }
+
     const result = id
       ? await context.supabase.from("ebooks").update(values).eq("id", id).select("id").single()
       : await context.supabase.from("ebooks").insert(values).select("id").single();
