@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -61,7 +61,7 @@ export function FreeGuideBox() {
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [done, setDone] = useState(false);
-  const submit = (e: React.FormEvent) => {
+  const submit = (e: FormEvent) => {
     e.preventDefault();
     if (!emailSchema.safeParse(email).success) { toast.error(t("emailPh")); return; }
     // Stage 2: save { email, language: lang, opted_in: consent } to the leads table.
