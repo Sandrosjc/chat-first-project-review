@@ -1,8 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { Database } from "@/integrations/supabase/types";
 
 const subscribeSchema = z.object({
   email: z.string().trim().email().max(255),
@@ -19,49 +17,25 @@ export const subscribeLead = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const email = data.email.toLowerCase();
 
-    const { data: existing, error: lookupError } = await supabaseAdmin
-      .from("leads")
-      .select("id, status")
-      .eq("email", email)
-      .maybeSingle();
+    // A single upsert makes simultaneous registrations for the same email safe.
+    // The database unique constraint on email is the source of truth.
+    const { error } = await supabaseAdmin.from("leads").upsert(
+      {
+        email,
+        language: data.language,
+        opted_in: data.optedIn,
+        source: data.source,
+        status: "active",
+      },
+      { onConflict: "email" },
+    );
 
-    // Do not attempt an insert when the lookup failed: that could create
-    // duplicate leads or hide a database outage behind a misleading result.
-    if (lookupError) {
-      console.error("[leads] lookup failed", lookupError);
-      throw new Error("Could not verify your email. Please try again.");
-    }
-
-    if (existing) {
-      // Re-subscribing reactivates the lead and refreshes consent/language.
-      const { error } = await supabaseAdmin
-        .from("leads")
-        .update({
-          language: data.language,
-          opted_in: data.optedIn,
-          status: "active",
-          source: data.source,
-        })
-        .eq("id", existing.id);
-      if (error) {
-        console.error("[leads] update failed", error);
-        throw new Error("Could not save your subscription. Please try again.");
-      }
-      return { ok: true, alreadySubscribed: true };
-    }
-
-    const { error } = await supabaseAdmin.from("leads").insert({
-      email,
-      language: data.language,
-      opted_in: data.optedIn,
-      source: data.source,
-      status: "active",
-    });
     if (error) {
-      console.error("[leads] insert failed", error);
+      console.error("[leads] save failed", error);
       throw new Error("Could not save your subscription. Please try again.");
     }
-    return { ok: true, alreadySubscribed: false };
+
+    return { ok: true };
   });
 
 async function assertAdmin(supabase: {
