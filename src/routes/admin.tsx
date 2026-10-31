@@ -51,7 +51,7 @@ function AdminPage() {
         if (error) throw error;
         coverUrl = supabase.storage.from("ebook-covers").getPublicUrl(path).data.publicUrl;
       }
-      await saveAdminEbook({ data: { ...form, cover_image_url: coverUrl, product_url: form.product_url || null, payhip_url: form.payhip_url || null, google_play_url: form.google_play_url || null } });
+      await saveAdminEbook({ data: { ...form, cover_image_url: coverUrl, product_url: form.product_url || null, payhip_url: form.payhip_url || null, google_play_url: form.google_play_url || null, is_free: false } });
       setForm(empty); setCover(null); await load(); toast.success("Produto salvo.");
     } catch (e) { toast.error(e instanceof Error ? e.message : "Não foi possível salvar."); }
     finally { setBusy(false); }
@@ -72,8 +72,6 @@ function AdminPage() {
       <label className="grid gap-1 text-sm md:col-span-2">Descrição<textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} rows={4} className="rounded border bg-background p-2"/></label>
       <label className="grid gap-1 text-sm md:col-span-2">Imagem da capa<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>setCover(e.target.files?.[0] ?? null)}/></label>
       {field("Link principal de venda ou acesso","product_url")}{field("Link Payhip (opcional)","payhip_url")}{field("Link Google Play Books (opcional)","google_play_url")}
-      {field("Link de acesso/download (guia grátis)","download_url")}
-      <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_free} onChange={e=>setForm({...form,is_free:e.target.checked,price:e.target.checked?"Grátis":form.price})}/>Este é o único guia gratuito</label>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_featured} onChange={e=>setForm({...form,is_featured:e.target.checked})}/>Destacar no site</label>
       <div className="flex gap-3 md:col-span-2"><button disabled={busy} className="rounded bg-primary px-5 py-3 text-primary-foreground">Salvar produto</button><button type="button" onClick={()=>{setForm(empty);setCover(null)}} className="rounded border px-5 py-3">Limpar</button></div>
     </form>
