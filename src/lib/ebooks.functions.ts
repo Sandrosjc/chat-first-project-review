@@ -17,13 +17,14 @@ const schema = z.object({
   price: z.string().trim().max(40).default(""),
   cover_image_url: z.string().url().nullable().optional(),
   product_url: z.string().url().nullable().optional(),
-  payhip_url: z.string().url().nullable().optional(),
-  google_play_url: z.string().url().nullable().optional(),
+  payhip_url: z.string().url(),
+  google_play_url: z.string().url(),
 
   is_featured: z.boolean().default(false),
+  is_free: z.literal(false).default(false),
 }).superRefine((v, ctx) => {
   if (!v.price.trim()) ctx.addIssue({ code: "custom", path: ["price"], message: "Informe o preço do e-book." });
-  if (!v.payhip_url && !v.google_play_url) ctx.addIssue({ code: "custom", path: ["payhip_url"], message: "Informe ao menos um link de venda: Payhip ou Google Play Books." });
+
 });
 
 export const listAdminEbooks = createServerFn({ method: "GET" })
