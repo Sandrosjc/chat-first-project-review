@@ -107,6 +107,9 @@ export type Database = {
         Row: {
           cover_image_url: string | null
           created_at: string
+          description: string
+          download_url: string | null
+          is_free: boolean
           google_play_url: string | null
           id: string
           is_featured: boolean
@@ -119,6 +122,9 @@ export type Database = {
         Insert: {
           cover_image_url?: string | null
           created_at?: string
+          description?: string
+          download_url?: string | null
+          is_free?: boolean
           google_play_url?: string | null
           id?: string
           is_featured?: boolean
