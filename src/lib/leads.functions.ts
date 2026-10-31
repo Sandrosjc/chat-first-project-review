@@ -84,3 +84,31 @@ export const listLeads = createServerFn({ method: "GET" })
     }
     return data ?? [];
   });
+
+
+// Admin-only: anonymous page-view totals and country breakdown.
+export const getPageViewStats = createServerFn({ method: "GET" })
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { data, count, error } = await context.supabase
+      .from("page_views")
+      .select("country_code", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .limit(5000);
+    if (error) {
+      console.error("[analytics] page-view stats failed", error);
+      throw new Error("Could not load visitor statistics.");
+    }
+    const countries = new Map<string, number>();
+    for (const row of data ?? []) {
+      const code = row.country_code ?? "unknown";
+      countries.set(code, (countries.get(code) ?? 0) + 1);
+    }
+    return {
+      totalPageViews: count ?? 0,
+      countries: Array.from(countries, ([country, views]) => ({ country, views }))
+        .sort((a, b) => b.views - a.views)
+        .slice(0, 10),
+    };
+  });
