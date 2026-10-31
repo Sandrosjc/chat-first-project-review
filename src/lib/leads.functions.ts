@@ -39,13 +39,13 @@ export const subscribeLead = createServerFn({ method: "POST" })
   });
 
 async function assertAdmin(supabase: {
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown }>;
+  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error?: unknown }>;
 }, userId: string) {
-  const { data: isAdmin } = await supabase.rpc("has_role", {
+  const { data: isAdmin, error } = await supabase.rpc("has_role", {
     _user_id: userId,
     _role: "admin",
   });
-  if (!isAdmin) throw new Error("Forbidden");
+  if (error || isAdmin !== true) throw new Error("Forbidden");
 }
 
 // Admin-only: dashboard counters.
@@ -61,7 +61,7 @@ export const getAdminStats = createServerFn({ method: "GET" })
         .eq("status", "active")
         .eq("opted_in", true),
       context.supabase.from("campaigns").select("id", { count: "exact", head: true }),
-      context.supabase.from("campaign_logs").select("id", { count: "exact", head: true }),
+      context.supabase.from("campaign_logs").select("id", { count: "exact", head: true }).eq("status", "sent"),
     ]);
     const statsError = leads.error ?? active.error ?? campaigns.error ?? sent.error;
     if (statsError) {
