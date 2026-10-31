@@ -113,7 +113,8 @@ export type Database = {
           google_play_url: string | null
           id: string
           is_featured: boolean
-          payhip_url: string
+          payhip_url: string | null
+          product_url: string | null
           price: string
           slug: string
           subtitle: string
@@ -128,7 +129,8 @@ export type Database = {
           google_play_url?: string | null
           id?: string
           is_featured?: boolean
-          payhip_url: string
+          payhip_url?: string | null
+          product_url?: string | null
           price?: string
           slug: string
           subtitle?: string
@@ -137,6 +139,10 @@ export type Database = {
         Update: {
           cover_image_url?: string | null
           created_at?: string
+          description?: string
+          download_url?: string | null
+          is_free?: boolean
+          product_url?: string | null
           google_play_url?: string | null
           id?: string
           is_featured?: boolean
