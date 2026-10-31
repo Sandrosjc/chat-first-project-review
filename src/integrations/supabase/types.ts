@@ -14,16 +14,200 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      campaign_logs: {
+        Row: {
+          campaign_id: string
+          id: string
+          lead_id: string
+          resend_email_id: string | null
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          campaign_id: string
+          id?: string
+          lead_id: string
+          resend_email_id?: string | null
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          campaign_id?: string
+          id?: string
+          lead_id?: string
+          resend_email_id?: string | null
+          sent_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_logs_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_logs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaigns: {
+        Row: {
+          body_html: string
+          created_at: string
+          ebook_id: string | null
+          id: string
+          preview_text: string
+          sent_count: number
+          status: string
+          subject: string
+          target_language: string
+          title: string
+        }
+        Insert: {
+          body_html?: string
+          created_at?: string
+          ebook_id?: string | null
+          id?: string
+          preview_text?: string
+          sent_count?: number
+          status?: string
+          subject?: string
+          target_language?: string
+          title: string
+        }
+        Update: {
+          body_html?: string
+          created_at?: string
+          ebook_id?: string | null
+          id?: string
+          preview_text?: string
+          sent_count?: number
+          status?: string
+          subject?: string
+          target_language?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_ebook_id_fkey"
+            columns: ["ebook_id"]
+            isOneToOne: false
+            referencedRelation: "ebooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ebooks: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          google_play_url: string | null
+          id: string
+          is_featured: boolean
+          payhip_url: string
+          price: string
+          slug: string
+          subtitle: string
+          title: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          google_play_url?: string | null
+          id?: string
+          is_featured?: boolean
+          payhip_url: string
+          price?: string
+          slug: string
+          subtitle?: string
+          title: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          google_play_url?: string | null
+          id?: string
+          is_featured?: boolean
+          payhip_url?: string
+          price?: string
+          slug?: string
+          subtitle?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      leads: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string | null
+          id: string
+          language: string
+          opted_in: boolean
+          source: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name?: string | null
+          id?: string
+          language?: string
+          opted_in?: boolean
+          source?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string | null
+          id?: string
+          language?: string
+          opted_in?: boolean
+          source?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +334,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
