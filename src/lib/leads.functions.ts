@@ -19,11 +19,18 @@ export const subscribeLead = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const email = data.email.toLowerCase();
 
-    const { data: existing } = await supabaseAdmin
+    const { data: existing, error: lookupError } = await supabaseAdmin
       .from("leads")
       .select("id, status")
       .eq("email", email)
       .maybeSingle();
+
+    // Do not attempt an insert when the lookup failed: that could create
+    // duplicate leads or hide a database outage behind a misleading result.
+    if (lookupError) {
+      console.error("[leads] lookup failed", lookupError);
+      throw new Error("Could not verify your email. Please try again.");
+    }
 
     if (existing) {
       // Re-subscribing reactivates the lead and refreshes consent/language.
