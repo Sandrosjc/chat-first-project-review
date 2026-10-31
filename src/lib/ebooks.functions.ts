@@ -39,7 +39,7 @@ export const listAdminEbooks = createServerFn({ method: "GET" })
   });
 
 export const saveAdminEbook = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .inputValidator((input) => schema.parse(input))
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
@@ -69,7 +69,7 @@ export const saveAdminEbook = createServerFn({ method: "POST" })
   });
 
 export const deleteAdminEbook = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
