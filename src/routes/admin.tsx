@@ -8,6 +8,7 @@ type Product = {
   id?: string; slug: string; title: string; subtitle: string; description: string;
   price: string; cover_image_url: string; product_url: string; payhip_url: string; google_play_url: string;
   is_featured: boolean;
+  is_free?: false;
 };
 const empty: Product = { slug:"", title:"", subtitle:"", description:"", price:"", cover_image_url:"", product_url:"", payhip_url:"", google_play_url:"", is_featured:false };
 
@@ -68,10 +69,10 @@ function AdminPage() {
   return <main className="mx-auto max-w-5xl px-5 py-10"><header className="mb-8 flex items-center justify-between"><h1 className="font-display text-3xl">Painel de produtos</h1><button onClick={()=>supabase.auth.signOut()} className="text-sm underline">Sair</button></header>
     <form onSubmit={save} className="mb-10 grid gap-4 rounded-xl border p-5 md:grid-cols-2">
       <h2 className="md:col-span-2 font-display text-2xl">{form.id ? "Editar produto" : "Cadastrar produto"}</h2>
-      {field("Título","title",true)}{field("Identificador (slug)","slug",true)}{field("Subtítulo","subtitle")}{field("Preço","price")}
+      {field("Título","title",true)}{field("Identificador (slug)","slug",true)}{field("Subtítulo","subtitle")}{field("Preço","price",true)}
       <label className="grid gap-1 text-sm md:col-span-2">Descrição<textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} rows={4} className="rounded border bg-background p-2"/></label>
       <label className="grid gap-1 text-sm md:col-span-2">Imagem da capa<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>setCover(e.target.files?.[0] ?? null)}/></label>
-      {field("Link principal de venda ou acesso","product_url")}{field("Link Payhip (opcional)","payhip_url")}{field("Link Google Play Books (opcional)","google_play_url")}
+      {field("Link de compra Payhip","payhip_url",true)}{field("Link Google Play Books","google_play_url",true)}
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_featured} onChange={e=>setForm({...form,is_featured:e.target.checked})}/>Destacar no site</label>
       <div className="flex gap-3 md:col-span-2"><button disabled={busy} className="rounded bg-primary px-5 py-3 text-primary-foreground">Salvar produto</button><button type="button" onClick={()=>{setForm(empty);setCover(null)}} className="rounded border px-5 py-3">Limpar</button></div>
     </form>
