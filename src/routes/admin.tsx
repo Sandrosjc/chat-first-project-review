@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { listAdminEbooks, saveAdminEbook, deleteAdminEbook } from "@/lib/ebooks.functions";
+import { getAdminStats, listLeads } from "@/lib/leads.functions";
 import { toast } from "sonner";
 
 type Product = {
@@ -22,6 +23,9 @@ function AdminPage() {
   const [form, setForm] = useState<Product>(empty);
   const [busy, setBusy] = useState(false);
   const [cover, setCover] = useState<File | null>(null);
+  const [stats, setStats] = useState<{ totalLeads: number; activeOptedIn: number; totalCampaigns: number; emailsSent: number } | null>(null);
+  const [leads, setLeads] = useState<Array<{ id: string; email: string; language: string; source: string; opted_in: boolean; status: string; created_at: string }>>([]);
+  const [dashboardError, setDashboardError] = useState("");
 
   async function load() {
     try { setProducts(await listAdminEbooks() as Product[]); }
@@ -32,7 +36,7 @@ function AdminPage() {
     const { data } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
     return () => data.subscription.unsubscribe();
   }, []);
-  useEffect(() => { if (session) void load(); }, [session]);
+  useEffect(() => { if (!session) return; void load(); Promise.all([getAdminStats(), listLeads()]).then(([nextStats, nextLeads]) => { setStats(nextStats); setLeads(nextLeads as typeof leads); setDashboardError(""); }).catch((error) => { console.error("[admin] dashboard load failed", error); setDashboardError("Não foi possível carregar os indicadores e contatos."); }); }, [session]);
 
   async function login(e: FormEvent) {
     e.preventDefault(); setBusy(true);
@@ -74,6 +78,19 @@ function AdminPage() {
 
   const field = (label: string, key: keyof Product, required=false) => <label className="grid min-w-0 gap-1 text-sm">{label}<input required={required} value={String(form[key] ?? "")} onChange={e=>setForm({...form,[key]:e.target.value})} className="min-w-0 rounded border border-input bg-background p-2"/></label>;
   return <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-10"><header className="mb-8 flex flex-wrap items-center justify-between gap-3"><h1 className="font-display text-2xl sm:text-3xl">Painel de produtos</h1><button onClick={()=>supabase.auth.signOut()} className="rounded border px-3 py-2 text-sm underline">Sair</button></header>
+    <section className="mb-10">
+      <h2 className="mb-4 font-display text-xl sm:text-2xl">Visão geral</h2>
+      {dashboardError && <p role="alert" className="mb-4 rounded border border-destructive/40 p-3 text-sm text-destructive">{dashboardError}</p>}
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <article className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">Cadastros de e-mail</p><p className="mt-2 font-display text-3xl">{stats?.totalLeads ?? "—"}</p></article>
+        <article className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">Contatos autorizados</p><p className="mt-2 font-display text-3xl">{stats?.activeOptedIn ?? "—"}</p></article>
+        <article className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">Campanhas cadastradas</p><p className="mt-2 font-display text-3xl">{stats?.totalCampaigns ?? "—"}</p></article>
+        <article className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">E-mails enviados</p><p className="mt-2 font-display text-3xl">{stats?.emailsSent ?? "—"}</p></article>
+      </div>
+      <div className="mt-8"><div className="mb-3 flex flex-wrap items-center justify-between gap-2"><h3 className="font-display text-lg">Contatos recentes</h3><span className="text-xs text-muted-foreground">Últimos 100 registros</span></div>
+      {leads.length === 0 ? <p className="rounded-lg border p-4 text-sm text-muted-foreground">Nenhum contato cadastrado ou lista ainda não carregada.</p> : <div className="overflow-x-auto rounded-lg border"><table className="w-full min-w-[620px] text-left text-sm"><thead className="bg-muted/50"><tr><th className="p-3">E-mail</th><th className="p-3">Idioma</th><th className="p-3">Origem</th><th className="p-3">Marketing</th><th className="p-3">Situação</th><th className="p-3">Cadastro</th></tr></thead><tbody>{leads.map((lead) => <tr key={lead.id} className="border-t"><td className="p-3">{lead.email}</td><td className="p-3 uppercase">{lead.language}</td><td className="p-3">{lead.source}</td><td className="p-3">{lead.opted_in ? "Autorizado" : "Não autorizado"}</td><td className="p-3">{lead.status}</td><td className="p-3">{new Date(lead.created_at).toLocaleDateString("pt-BR")}</td></tr>)}</tbody></table></div>}</div>
+      <div className="mt-8 rounded-xl border border-dashed p-4"><h3 className="font-display text-lg">Campanhas</h3><p className="mt-1 text-sm text-muted-foreground">A estrutura de campanhas está no banco. A criação, o envio e os relatórios serão conectados na etapa de comunicação por e-mail.</p></div>
+    </section>
     <form onSubmit={save} className="mb-10 grid min-w-0 gap-4 rounded-xl border p-4 sm:p-5 md:grid-cols-2">
       <h2 className="font-display text-xl sm:text-2xl md:col-span-2">{form.id ? "Editar produto" : "Cadastrar produto"}</h2>
       <p className="text-sm text-muted-foreground md:col-span-2">O catálogo público exibe três e-books pagos. Cadastre os três produtos definitivos e mantenha os links de compra atualizados.</p>
