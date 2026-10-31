@@ -12,12 +12,12 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-gold/20 bg-background/90 shadow-[0_8px_30px_-24px_rgba(70,35,25,0.35)] backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3.5">
         <Link to="/" className="font-display text-[1.8rem] tracking-wide text-primary transition-opacity hover:opacity-75">Chequetto</Link>
-        <nav className="order-3 flex w-full gap-6 overflow-x-auto py-1 text-[13px] font-medium tracking-wide md:order-2 md:w-auto">
+        <nav className="order-3 flex w-full gap-6 overflow-x-auto py-1 text-[13px] font-medium tracking-wide lg:order-2 lg:w-auto">
           {nav.map((n) => (
             <Link key={n.to} to={n.to} activeOptions={{ exact: n.to === "/" }} className="whitespace-nowrap text-foreground/80 hover:text-primary" activeProps={{ className: "text-primary font-medium" }}>{t(n.k)}</Link>
           ))}
         </nav>
-        <div className="order-2 flex items-center gap-3 md:order-3">
+        <div className="order-2 flex items-center gap-3 lg:order-3">
           <label className="flex items-center gap-1 text-sm text-muted-foreground">
             <Globe className="h-4 w-4" aria-hidden />
             <select aria-label="Language" value={lang} onChange={(e) => setLang(e.target.value as Lang)} className="bg-transparent text-foreground outline-none">
