@@ -19,12 +19,11 @@ const schema = z.object({
   product_url: z.string().url().nullable().optional(),
   payhip_url: z.string().url().nullable().optional(),
   google_play_url: z.string().url().nullable().optional(),
-  download_url: z.string().url().nullable().optional(),
-  is_free: z.boolean().default(false),
+
   is_featured: z.boolean().default(false),
 }).superRefine((v, ctx) => {
-  if (v.is_free && !v.download_url) ctx.addIssue({ code: "custom", path: ["download_url"], message: "Informe o link de acesso ao guia gratuito." });
-  if (!v.is_free && !v.product_url && !v.payhip_url && !v.google_play_url) ctx.addIssue({ code: "custom", path: ["payhip_url"], message: "Informe pelo menos um link de venda." });
+  if (!v.price.trim()) ctx.addIssue({ code: "custom", path: ["price"], message: "Informe o preço do e-book." });
+  if (!v.payhip_url && !v.google_play_url) ctx.addIssue({ code: "custom", path: ["payhip_url"], message: "Informe ao menos um link de venda: Payhip ou Google Play Books." });
 });
 
 export const listAdminEbooks = createServerFn({ method: "GET" })
@@ -32,7 +31,7 @@ export const listAdminEbooks = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { data, error } = await context.supabase.from("ebooks")
-      .select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, download_url, is_free, is_featured, created_at")
+      .select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, is_free, is_featured, created_at")
       .order("created_at", { ascending: false });
     if (error) throw new Error("Não foi possível carregar os produtos.");
     return data ?? [];
@@ -44,10 +43,6 @@ export const saveAdminEbook = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
     const { id, ...values } = data;
-    if (values.is_free) {
-      const { data: existing } = await context.supabase.from("ebooks").select("id").eq("is_free", true).maybeSingle();
-      if (existing && existing.id !== id) throw new Error("Já existe um produto gratuito. Edite o guia existente.");
-    }
     const result = id
       ? await context.supabase.from("ebooks").update(values).eq("id", id).select("id").single()
       : await context.supabase.from("ebooks").insert(values).select("id").single();
