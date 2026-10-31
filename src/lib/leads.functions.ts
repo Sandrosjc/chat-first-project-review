@@ -80,7 +80,7 @@ export const getAdminStats = createServerFn({ method: "GET" })
 
 // Admin-only: latest leads for the dashboard table.
 export const listLeads = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { data, error } = await context.supabase
