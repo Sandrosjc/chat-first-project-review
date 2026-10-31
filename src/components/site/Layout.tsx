@@ -9,10 +9,10 @@ export function SiteHeader() {
     { to: "/about", k: "about" }, { to: "/contact", k: "contact" },
   ] as const;
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-        <Link to="/" className="font-display text-2xl tracking-wide text-primary">Chequetto</Link>
-        <nav className="order-3 flex w-full gap-5 overflow-x-auto text-sm md:order-2 md:w-auto">
+    <header className="sticky top-0 z-40 border-b border-gold/20 bg-background/90 shadow-[0_8px_30px_-24px_rgba(70,35,25,0.35)] backdrop-blur-xl">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3.5">
+        <Link to="/" className="font-display text-[1.8rem] tracking-wide text-primary transition-opacity hover:opacity-75">Chequetto</Link>
+        <nav className="order-3 flex w-full gap-6 overflow-x-auto py-1 text-[13px] font-medium tracking-wide md:order-2 md:w-auto">
           {nav.map((n) => (
             <Link key={n.to} to={n.to} activeOptions={{ exact: n.to === "/" }} className="whitespace-nowrap text-foreground/80 hover:text-primary" activeProps={{ className: "text-primary font-medium" }}>{t(n.k)}</Link>
           ))}
