@@ -21,12 +21,12 @@ function Home() {
     <>
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute -right-40 -top-40 h-[34rem] w-[34rem] rounded-full bg-gold/10 blur-3xl" />
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 md:grid-cols-[1.02fr_.98fr] md:gap-14 md:py-20">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 lg:grid-cols-[1.02fr_.98fr] lg:gap-14 lg:py-20">
           <div className="relative z-10">
             <p className="inline-flex items-center gap-2 rounded-full border border-gold/50 bg-card/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
               <span className="h-1.5 w-1.5 rounded-full bg-gold" /> {t("heroKicker")}
             </p>
-            <h1 className="mt-6 max-w-xl font-display text-5xl leading-[0.98] text-primary md:text-7xl">{t("heroTitle")}</h1>
+            <h1 className="mt-6 max-w-xl font-display text-5xl leading-[0.98] text-primary lg:text-7xl">{t("heroTitle")}</h1>
             <p className="mt-6 max-w-lg text-base leading-8 text-muted-foreground md:text-lg">{t("heroText")}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a href="#free-guide" className="rounded-md bg-primary px-7 py-4 text-center text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:-translate-y-0.5 hover:opacity-95">{t("getGuide")}</a>
