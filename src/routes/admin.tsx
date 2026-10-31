@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { listAdminEbooks, saveAdminEbook, deleteAdminEbook } from "@/lib/ebooks.functions";
-import { getAdminStats, listLeads } from "@/lib/leads.functions";
+import { getAdminStats, listLeads, getPageViewStats } from "@/lib/leads.functions";
 import { toast } from "sonner";
 
 type Product = {
@@ -26,6 +26,7 @@ function AdminPage() {
   const [stats, setStats] = useState<{ totalLeads: number; activeOptedIn: number; totalCampaigns: number; emailsSent: number } | null>(null);
   const [leads, setLeads] = useState<Array<{ id: string; email: string; language: string; source: string; opted_in: boolean; status: string; created_at: string }>>([]);
   const [dashboardError, setDashboardError] = useState("");
+  const [visitorStats, setVisitorStats] = useState<{ totalPageViews: number; countries: Array<{ country: string; views: number }> } | null>(null);
 
   async function load() {
     try { setProducts(await listAdminEbooks() as Product[]); }
@@ -36,7 +37,7 @@ function AdminPage() {
     const { data } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
     return () => data.subscription.unsubscribe();
   }, []);
-  useEffect(() => { if (!session) return; void load(); Promise.all([getAdminStats(), listLeads()]).then(([nextStats, nextLeads]) => { setStats(nextStats); setLeads(nextLeads as typeof leads); setDashboardError(""); }).catch((error) => { console.error("[admin] dashboard load failed", error); setDashboardError("Não foi possível carregar os indicadores e contatos."); }); }, [session]);
+  useEffect(() => { if (!session) return; void load(); Promise.all([getAdminStats(), listLeads(), getPageViewStats()]).then(([nextStats, nextLeads, nextVisitorStats]) => { setStats(nextStats); setLeads(nextLeads as typeof leads); setVisitorStats(nextVisitorStats); setDashboardError(""); }).catch((error) => { console.error("[admin] dashboard load failed", error); setDashboardError("Não foi possível carregar os indicadores e contatos."); }); }, [session]);
 
   async function login(e: FormEvent) {
     e.preventDefault(); setBusy(true);
@@ -89,6 +90,10 @@ function AdminPage() {
       </div>
       <div className="mt-8"><div className="mb-3 flex flex-wrap items-center justify-between gap-2"><h3 className="font-display text-lg">Contatos recentes</h3><span className="text-xs text-muted-foreground">Últimos 100 registros</span></div>
       {leads.length === 0 ? <p className="rounded-lg border p-4 text-sm text-muted-foreground">Nenhum contato cadastrado ou lista ainda não carregada.</p> : <div className="overflow-x-auto rounded-lg border"><table className="w-full min-w-[620px] text-left text-sm"><thead className="bg-muted/50"><tr><th className="p-3">E-mail</th><th className="p-3">Idioma</th><th className="p-3">Origem</th><th className="p-3">Marketing</th><th className="p-3">Situação</th><th className="p-3">Cadastro</th></tr></thead><tbody>{leads.map((lead) => <tr key={lead.id} className="border-t"><td className="p-3">{lead.email}</td><td className="p-3 uppercase">{lead.language}</td><td className="p-3">{lead.source}</td><td className="p-3">{lead.opted_in ? "Autorizado" : "Não autorizado"}</td><td className="p-3">{lead.status}</td><td className="p-3">{new Date(lead.created_at).toLocaleDateString("pt-BR")}</td></tr>)}</tbody></table></div>}</div>
+      <div className="mt-8 rounded-xl border p-4">
+        <div className="flex flex-wrap items-end justify-between gap-2"><div><h3 className="font-display text-lg">Visitas ao site</h3><p className="text-sm text-muted-foreground">Visualizações de páginas registradas, sem armazenar endereço IP.</p></div><p className="font-display text-3xl">{visitorStats?.totalPageViews ?? "—"}</p></div>
+        <div className="mt-4"><h4 className="mb-2 text-sm font-semibold">Países identificados</h4>{visitorStats?.countries.length ? <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{visitorStats.countries.map((item) => <li key={item.country} className="flex justify-between rounded bg-muted/40 px-3 py-2 text-sm"><span>{item.country === "unknown" ? "Não identificado" : item.country}</span><strong>{item.views}</strong></li>)}</ul> : <p className="text-sm text-muted-foreground">Ainda não há visitas registradas.</p>}</div>
+      </div>
       <div className="mt-8 rounded-xl border border-dashed p-4"><h3 className="font-display text-lg">Campanhas</h3><p className="mt-1 text-sm text-muted-foreground">A estrutura de campanhas está no banco. A criação, o envio e os relatórios serão conectados na etapa de comunicação por e-mail.</p></div>
     </section>
     <form onSubmit={save} className="mb-10 grid min-w-0 gap-4 rounded-xl border p-4 sm:p-5 md:grid-cols-2">
