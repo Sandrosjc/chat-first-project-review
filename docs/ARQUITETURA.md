@@ -2,7 +2,7 @@
 
 ## 1. Negócio
 - Funil: "Free 10-Page Guide" captura e-mail + idioma do leitor.
-- Venda: e-books com checkout no **Payhip** (download imediato) e **Google Play Books**. Não usamos PayPal.
+- Catálogo: um único guia gratuito e e-books pagos. Cada item tem capa, título, descrição, preço e um link principal configurável para venda/acesso; Payhip e Google Play são destinos opcionais adicionais.
 - Nutrição: IA escreve campanhas de e-mail; envio pelo **Resend**.
 
 ## 2. Idiomas
@@ -33,26 +33,26 @@ docs/ARQUITETURA.md          Este documento
 ```
 
 ## 5. Banco de dados (Etapa 2 — Lovable Cloud)
-- **ebooks**: id, title, description, price, cover_image_url, payhip_url (obrigatório), google_play_url, is_featured, created_at
+- **ebooks**: id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, download_url, is_free, is_featured, created_at. Índice único garante no máximo um item gratuito.
 - **leads**: id, email (único), first_name, language (default 'en'), source, opted_in, status ('active'|'unsubscribed'), created_at
 - **campaigns**: id, title, ebook_id, target_language, subject, body_html, status ('draft'|'approved'|'sent'), sent_count, created_at
 - **campaign_logs**: id, campaign_id, lead_id, resend_email_id, status, sent_at
 - Administrador com login e papel "admin" em tabela separada de papéis.
 
-## 6. IA de campanhas (Etapa 3)
+## 6. Painel administrativo\n- `/admin` protegido por login Supabase e papel `admin` validado no servidor.\n- Cadastro, edição, exclusão e upload de capas no bucket `ebook-covers`.\n- O guia gratuito é único; os demais itens são pagos. O visitante é encaminhado ao link cadastrado no item.\n\n## 7. IA de campanhas (Etapa 3)
 - Lovable AI, chamada só no servidor.
 - Entrada: e-book (título, benefícios, preço, link Payhip), idioma, objetivo.
 - Saída: subject, preview_text, body_html com botão "Get Your Copy on Payhip" (traduzido).
 - Modo copiloto: nada é enviado sem o administrador aprovar a prévia.
 
-## 7. Resend (Etapa 4)
+## 8. Resend (Etapa 4)
 - Chave só no servidor. Domínio próprio verificado no Resend é obrigatório.
 - Só envia para leads com opted_in = true e status = 'active'.
 - Todo e-mail tem link de descadastro em 1 clique.
 - Máximo 2 e-mails por semana por leitor; registro em campaign_logs evita duplicados.
 - Teste para o próprio e-mail antes do disparo geral.
 
-## 8. Etapas
+## 9. Etapas
 1. Site público (FEITO).
 2. Lovable Cloud: tabelas, guia grátis salvando leads, login admin.
 3. Painel /admin em português + IA de campanhas.
