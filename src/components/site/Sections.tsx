@@ -20,12 +20,12 @@ type CatalogBook = Ebook & { coverImageUrl?: string | null; productUrl?: string 
 export function EbookCard({ book }: { book: CatalogBook }) {
   const { t } = useI18n();
   return (
-    <article className="flex flex-col rounded-lg border border-border bg-card p-5 shadow-soft">
-      {book.coverImageUrl ? <img src={book.coverImageUrl} alt={`Cover of ${book.title}`} loading="lazy" className="aspect-[3/4] w-full rounded-md object-cover" /> : <div className={`flex aspect-[3/4] flex-col justify-between rounded-md p-6 ${toneClass[book.tone]}`}><span className="text-xs uppercase tracking-[0.3em] opacity-80">Chequetto</span><span className="font-display text-3xl leading-tight">{book.title}</span></div>}
+    <article className="group flex flex-col rounded-2xl border border-border/80 bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-gold/70 hover:shadow-xl">
+      {book.coverImageUrl ? <img src={book.coverImageUrl} alt={`Cover of ${book.title}`} loading="lazy" className="aspect-[3/4] w-full rounded-xl object-cover transition-transform duration-500 group-hover:scale-[1.015]" /> : <div className={`flex aspect-[3/4] flex-col justify-between rounded-md p-6 ${toneClass[book.tone]}`}><span className="text-xs uppercase tracking-[0.3em] opacity-80">Chequetto</span><span className="font-display text-3xl leading-tight">{book.title}</span></div>}
       <h3 className="mt-4 font-display text-xl">{book.title}</h3>
       <p className="mt-1 flex-1 text-sm text-muted-foreground">{book.description || book.subtitle}</p>
       <p className="mt-3 font-semibold text-primary">{book.price}</p>
-      <div className="mt-4 grid gap-2">
+      <div className="mt-5 grid gap-2">
         {book.payhipUrl && <a href={book.payhipUrl} target="_blank" rel="noopener noreferrer" className="rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground hover:opacity-90">{t("buyPayhip")}</a>}
         {book.googlePlayUrl && <a href={book.googlePlayUrl} target="_blank" rel="noopener noreferrer" className="rounded-md border border-primary px-4 py-2 text-center text-sm font-medium text-primary hover:bg-primary/5">{t("googlePlay")}</a>}
       </div>
@@ -98,15 +98,15 @@ export function FreeGuideBox() {
     }
   };
   return (
-    <section className="rounded-xl border border-gold/50 bg-card p-8 shadow-soft md:p-10">
-      <p className="text-xs uppercase tracking-[0.3em] text-gold">PDF · 10 pages</p>
-      <h2 className="mt-2 font-display text-3xl">{t("guideTitle")}</h2>
-      <p className="mt-2 text-muted-foreground">{t("guideText")}</p>
+    <section className="relative overflow-hidden rounded-[1.5rem] border border-gold/50 bg-card p-8 shadow-soft md:p-10">
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">FREE MINI E-BOOK · PDF</p>
+      <h2 className="mt-3 font-display text-3xl text-primary md:text-4xl">{t("guideTitle")}</h2>
+      <p className="mt-3 max-w-xl leading-7 text-muted-foreground">{t("guideText")}</p>
       {done ? <p className="mt-6 font-medium text-secondary">{t("guideOk")}</p> : (
         <form onSubmit={submit} className="mt-6 grid gap-3">
           <div className="flex flex-col gap-3 sm:flex-row">
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("emailPh")} className="flex-1 rounded-md border border-input bg-background px-4 py-3 outline-none focus:border-primary" />
-            <button type="submit" disabled={submitting} className="rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60">{submitting ? (lang === "pt" ? "Enviando..." : "Sending...") : t("getGuide")}</button>
+            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("emailPh")} className="min-w-0 flex-1 rounded-md border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/10" />
+            <button type="submit" disabled={submitting} className="rounded-md bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-soft transition-all hover:-translate-y-0.5 hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60">{submitting ? (lang === "pt" ? "Enviando..." : "Sending...") : t("getGuide")}</button>
           </div>
           <label className="flex items-start gap-2 text-xs text-muted-foreground">
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 accent-primary" />
