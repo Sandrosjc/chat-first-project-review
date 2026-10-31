@@ -26,7 +26,7 @@ export function EbookCard({ book }: { book: CatalogBook }) {
       <p className="mt-1 flex-1 text-sm text-muted-foreground">{book.description || book.subtitle}</p>
       <p className="mt-3 font-semibold text-primary">{book.price}</p>
       <div className="mt-4 grid gap-2">
-        {book.productUrl || book.payhipUrl ? <a href={book.productUrl || book.payhipUrl} target="_blank" rel="noopener noreferrer" className="rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground hover:opacity-90">{t("buyPayhip")}</a> : null}
+        {book.payhipUrl && <a href={book.payhipUrl} target="_blank" rel="noopener noreferrer" className="rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground hover:opacity-90">{t("buyPayhip")}</a>}
         {book.googlePlayUrl && <a href={book.googlePlayUrl} target="_blank" rel="noopener noreferrer" className="rounded-md border border-primary px-4 py-2 text-center text-sm font-medium text-primary hover:bg-primary/5">{t("googlePlay")}</a>}
       </div>
     </article>
