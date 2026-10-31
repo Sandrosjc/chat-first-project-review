@@ -2,7 +2,7 @@
 
 ## 1. Negócio
 - Funil: "Free 10-Page Guide" captura e-mail + idioma do leitor.
-- Catálogo: um único guia gratuito e e-books pagos. Cada item tem capa, título, descrição, preço e um link principal configurável para venda/acesso; Payhip e Google Play são destinos opcionais adicionais.
+- Catálogo: três e-books pagos, sem biblioteca extensa. Cada e-book terá capa, título, descrição, preço e links comerciais cadastrados para Google Play Books e Payhip. A compra acompanha acesso ao aplicativo complementar por 30 dias, durante o protocolo do e-book.
 - Nutrição: IA escreve campanhas de e-mail; envio pelo **Resend**.
 
 ## 2. Idiomas
@@ -21,25 +21,25 @@ Títulos: Cormorant Garamond. Textos: Karla. Tokens em `src/styles.css`.
 ## 4. Estrutura do código
 ```text
 src/routes/__root.tsx        Layout global (topo, rodapé, idiomas, fontes)
-src/routes/index.tsx         Home (hero, guia grátis, 3 e-books, blog)
+src/routes/index.tsx         Home (hero, 3 e-books, blog)
 src/routes/ebooks.tsx        Catálogo
 src/routes/blog/index.tsx    Lista de artigos
 src/routes/blog/$slug.tsx    Artigo
 src/routes/about|contact|privacy|terms.tsx
 src/components/site/         Layout, Sections (cards, guia), Page
 src/lib/i18n.tsx             Traduções + detecção de idioma
-src/lib/content.ts           E-books (links Payhip/Google Play) e artigos
+src/lib/content.ts           E-books e artigos; a vitrine pública usa registros cadastrados
 docs/ARQUITETURA.md          Este documento
 ```
 
 ## 5. Banco de dados (Etapa 2 — Lovable Cloud)
-- **ebooks**: id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, download_url, is_free, is_featured, created_at. Índice único garante no máximo um item gratuito.
+- **ebooks**: id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, download_url, is_free, is_featured, created_at. Os e-books são pagos; o aplicativo complementar não é item do catálogo.
 - **leads**: id, email (único), first_name, language (default 'en'), source, opted_in, status ('active'|'unsubscribed'), created_at
 - **campaigns**: id, title, ebook_id, target_language, subject, body_html, status ('draft'|'approved'|'sent'), sent_count, created_at
 - **campaign_logs**: id, campaign_id, lead_id, resend_email_id, status, sent_at
 - Administrador com login e papel "admin" em tabela separada de papéis.
 
-## 6. Painel administrativo\n- `/admin` protegido por login Supabase e papel `admin` validado no servidor.\n- Cadastro, edição, exclusão e upload de capas no bucket `ebook-covers`.\n- O guia gratuito é único; os demais itens são pagos. O visitante é encaminhado ao link cadastrado no item.\n\n## 7. IA de campanhas (Etapa 3)
+## 6. Painel administrativo\n- `/admin` protegido por login Supabase e papel `admin` validado no servidor.\n- Cadastro, edição, exclusão e upload de capas no bucket `ebook-covers`.\n- O painel administra os e-books pagos; o visitante segue aos links de venda cadastrados.\n\n## 7. IA de campanhas (Etapa 3)
 - Lovable AI, chamada só no servidor.
 - Entrada: e-book (título, benefícios, preço, link Payhip), idioma, objetivo.
 - Saída: subject, preview_text, body_html com botão "Get Your Copy on Payhip" (traduzido).
