@@ -24,18 +24,12 @@ function Home() {
         <div className="mx-auto grid max-w-7xl items-start gap-7 px-4 py-10 lg:grid-cols-[1.08fr_.92fr] lg:gap-10 lg:py-14">
           <div className="relative min-w-0">
             <div className="overflow-hidden rounded-2xl border border-gold/30 bg-secondary shadow-soft">
-              <video
+              <img
+                src={heroImg}
+                alt="Chequetto hair-care editorial"
                 className="aspect-video w-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                poster={heroImg}
-                aria-label="Chequetto brand introduction"
-              >
-                <source src="/videos/chequetto-intro.mp4" type="video/mp4" />
-              </video>
+                fetchPriority="high"
+              />
             </div>
             <p className="mt-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">Chequetto · Hair-care editorial</p>
             <h1 className="mt-2 max-w-2xl font-display text-3xl leading-tight text-primary sm:text-4xl lg:text-5xl">{t("heroTitle")}</h1>
