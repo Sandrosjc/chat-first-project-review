@@ -4,6 +4,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { posts, type Ebook } from "@/lib/content";
 import { subscribeLead } from "@/lib/leads.functions";
+import { getFreeGuideUrl } from "@/lib/site-settings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
@@ -145,12 +146,15 @@ export function FreeGuideBox() {
     if (submitting) return;
     setSubmitting(true);
     try {
+      const guideUrl = await getFreeGuideUrl();
+      if (!guideUrl) throw new Error(lang === "pt" ? "O link do guia ainda não foi configurado. Tente novamente mais tarde." : "The guide link is not configured yet. Please try again later.");
       await subscribeLead({ data: { email, language: lang, optedIn: consent } });
       setDone(true);
       toast.success(t("guideOk"));
+      window.location.assign(guideUrl);
     } catch (error) {
       console.error("[guide] subscription failed", error);
-      toast.error(lang === "pt" ? "Não foi possível salvar seu e-mail. Tente novamente." : "We couldn't save your email. Please try again.");
+      toast.error(error instanceof Error ? error.message : (lang === "pt" ? "Não foi possível salvar seu e-mail. Tente novamente." : "We couldn't save your email. Please try again."));
     } finally {
       setSubmitting(false);
     }
