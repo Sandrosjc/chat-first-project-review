@@ -12,7 +12,7 @@ export const getFreeGuideUrl = createServerFn({ method: "GET" })
   .handler(async () => {
     const { createClient } = await import("@supabase/supabase-js");
     const url = process.env.SUPABASE_URL;
-    const key = process.env.SUPABASE_ANON_KEY;
+    const key = process.env.SUPABASE_PUBLISHABLE_KEY;
     if (!url || !key) return "";
     const client = createClient(url, key);
     const { data } = await client.from("site_settings").select("value").eq("key", "free_guide_payhip_url").maybeSingle();
