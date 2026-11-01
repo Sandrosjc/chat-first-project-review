@@ -135,6 +135,52 @@ export function PostGrid() {
 
 const emailSchema = z.string().trim().email().max(255);
 
+export function AppAccessBox() {
+  const { lang } = useI18n();
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [registered, setRegistered] = useState(false);
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!emailSchema.safeParse(email).success) {
+      toast.error(lang === "pt" ? "Informe um e-mail válido." : "Please enter a valid email.");
+      return;
+    }
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      await subscribeLead({ data: { email, language: lang, optedIn: false, source: "app_access" } });
+      setRegistered(true);
+      toast.success(lang === "pt" ? "Cadastro realizado. Agora você pode acessar o aplicativo." : "Registration complete. You can now access the app.");
+    } catch (error) {
+      console.error("[app access] registration failed", error);
+      toast.error(lang === "pt" ? "Não foi possível registrar seu e-mail. Tente novamente." : "We couldn't register your email. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <section id="companion-app" aria-labelledby="companion-app-title" className="overflow-hidden rounded-2xl border border-gold/40 bg-secondary/60 p-5 shadow-soft sm:p-6">
+      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">Your hair-care companion</p>
+      <h2 id="companion-app-title" className="mt-2 font-display text-2xl text-primary">The Chequetto Hair-Care App</h2>
+      <p className="mt-2 text-sm leading-6 text-muted-foreground">{lang === "pt" ? "Cadastre seu e-mail para liberar o acesso ao aplicativo." : "Register your email to unlock access to the app."}</p>
+      {registered ? (
+        <div className="mt-4">
+          <p className="text-sm font-medium text-primary">{lang === "pt" ? "Cadastro confirmado!" : "Registration confirmed!"}</p>
+          <a href="/app" className="mt-3 inline-flex items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">{lang === "pt" ? "Acessar aplicativo" : "Access the app"}</a>
+        </div>
+      ) : (
+        <form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={lang === "pt" ? "Seu melhor e-mail" : "Your email address"} className="min-w-0 rounded-md border border-input bg-background px-4 py-3 outline-none focus:border-primary" />
+          <button type="submit" disabled={submitting} className="rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60">{submitting ? (lang === "pt" ? "Enviando..." : "Submitting...") : (lang === "pt" ? "Cadastrar e liberar acesso" : "Register and unlock access")}</button>
+        </form>
+      )}
+    </section>
+  );
+}
+
 export function FreeGuideBox() {
   const { t, lang } = useI18n();
   const [email, setEmail] = useState("");
