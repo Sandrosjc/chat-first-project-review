@@ -36,11 +36,21 @@ function Home() {
             <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">{t("heroText")}</p>
           </div>
           <div className="flex min-w-0 flex-col gap-4">
-            <MainEbookFeature />
+            <div id="main-ebook-offer" className="scroll-mt-24"><MainEbookFeature /></div>
             <div id="free-guide" className="scroll-mt-24">
               <FreeGuideBox />
             </div>
           </div>
+        </div>
+      </section>
+      <section aria-labelledby="companion-app-title" className="mx-auto mt-10 max-w-7xl px-4">
+        <div className="flex flex-col gap-5 rounded-2xl border border-gold/40 bg-secondary/60 p-6 shadow-soft sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">Your 30-day hair-care companion</p>
+            <h2 id="companion-app-title" className="mt-2 font-display text-2xl text-primary sm:text-3xl">Meet the 30-Day Hair Reset app</h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Explore the app that helps you follow your hair-care plan day by day. It is included as a 30-day companion bonus when you purchase The 30-Day Hair Reset ebook.</p>
+          </div>
+          <a href="#main-ebook-offer" className="inline-flex shrink-0 items-center justify-center rounded-md border border-primary px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">Discover the app and ebook</a>
         </div>
       </section>
       <section className="mx-auto mt-12 max-w-7xl px-4">
