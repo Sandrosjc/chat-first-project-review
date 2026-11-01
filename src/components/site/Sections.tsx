@@ -82,10 +82,11 @@ export function MainEbookFeature() {
         <h2 className="mt-2 font-display text-2xl leading-tight text-primary sm:text-3xl">{book.title}</h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">{book.description || book.subtitle}</p>
         {book.price && <p className="mt-3 font-semibold text-primary">{book.price}</p>}
-        {book.payhipUrl ? (
-          <a href={book.payhipUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex justify-center rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:opacity-90">{t("buyPayhip")}</a>
-        ) : <p className="mt-3 text-xs text-muted-foreground">Purchase link will be available soon.</p>}
-        {book.googlePlayUrl && <a href={book.googlePlayUrl} target="_blank" rel="noopener noreferrer" className="mt-2 rounded-md border border-primary px-4 py-2 text-center text-sm font-medium text-primary hover:bg-primary/5">{t("googlePlay")}</a>}
+        <div className="mt-4 grid gap-2">
+          {book.payhipUrl && <a href={book.payhipUrl} target="_blank" rel="noopener noreferrer" className="inline-flex justify-center rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:opacity-90">{t("buyPayhip")}</a>}
+          {book.googlePlayUrl && <a href={book.googlePlayUrl} target="_blank" rel="noopener noreferrer" className="rounded-md border border-primary px-4 py-2 text-center text-sm font-medium text-primary hover:bg-primary/5">{t("googlePlay")}</a>}
+          {!book.payhipUrl && !book.googlePlayUrl && <p className="text-xs text-muted-foreground">Purchase options will appear when configured in the administration.</p>}
+        </div>
         <p className="mt-2 text-xs text-muted-foreground">Includes the 30-day companion app as a purchase bonus.</p>
       </div>
     </article>
@@ -110,7 +111,7 @@ export function EbookGrid() {
       });
     return () => { active = false; };
   }, []);
-  return <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{books.slice(0, 3).map((b) => <EbookCard key={b.id} book={b} />)}</div>;
+  return <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{books.slice(0, 3).map((b) => <EbookCard key={b.id} book={b} />)}</div>;
 }
 
 export function PostGrid() {
