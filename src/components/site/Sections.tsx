@@ -84,7 +84,7 @@ export function MainEbookFeature() {
         {book.payhipUrl ? (
           <a href={book.payhipUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex justify-center rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:opacity-90">{t("buyPayhip")}</a>
         ) : <p className="mt-3 text-xs text-muted-foreground">Purchase link will be available soon.</p>}
-        {book.googlePlayUrl && <a href={book.googlePlayUrl} target="_blank" rel="noopener noreferrer" className="mt-2 text-center text-xs font-medium text-primary underline">{t("googlePlay")}</a>}
+        {book.googlePlayUrl && <a href={book.googlePlayUrl} target="_blank" rel="noopener noreferrer" className="mt-2 rounded-md border border-primary px-4 py-2 text-center text-sm font-medium text-primary hover:bg-primary/5">{t("googlePlay")}</a>}
         <p className="mt-2 text-xs text-muted-foreground">Includes the 30-day companion app as a purchase bonus.</p>
       </div>
     </article>
