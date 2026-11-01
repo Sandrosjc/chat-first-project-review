@@ -24,42 +24,36 @@ function Home() {
         <div className="mx-auto grid max-w-7xl items-start gap-7 px-4 py-10 lg:grid-cols-[1.08fr_.92fr] lg:gap-10 lg:py-14">
           <div className="relative min-w-0">
             <div className="overflow-hidden rounded-2xl border border-gold/30 bg-secondary shadow-soft">
-              <img
-                src={heroImg}
-                alt="Chequetto hair-care editorial"
-                className="aspect-video w-full object-cover"
-                fetchPriority="high"
-              />
+              <img src={heroImg} alt="Chequetto hair-care editorial" className="aspect-video w-full object-cover" fetchPriority="high" />
             </div>
             <p className="mt-3 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">Chequetto · Hair-care editorial</p>
             <h1 className="mt-2 max-w-2xl font-display text-3xl leading-tight text-primary sm:text-4xl lg:text-5xl">{t("heroTitle")}</h1>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">{t("heroText")}</p>
           </div>
+
           <div className="flex min-w-0 flex-col gap-4">
             <div id="main-ebook-offer" className="scroll-mt-24"><MainEbookFeature /></div>
-            <div id="free-guide" className="scroll-mt-24">
-              <FreeGuideBox />
-            </div>
+
+            <section id="companion-app" aria-labelledby="companion-app-title" className="overflow-hidden rounded-2xl border border-gold/40 bg-secondary/60 p-5 shadow-soft sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">Your hair-care companion</p>
+              <h2 id="companion-app-title" className="mt-2 font-display text-2xl text-primary">The Chequetto Hair-Care App</h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">A practical digital companion for your hair-care routine. Discover the app and access options.</p>
+              <a href="#main-ebook-offer" className="mt-4 inline-flex items-center justify-center rounded-md border border-primary px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">Discover the app</a>
+            </section>
+
+            <div id="free-guide" className="scroll-mt-24"><FreeGuideBox /></div>
           </div>
         </div>
       </section>
-      <section aria-labelledby="companion-app-title" className="mx-auto mt-10 max-w-7xl px-4">
-        <div className="flex flex-col gap-5 rounded-2xl border border-gold/40 bg-secondary/60 p-6 shadow-soft sm:flex-row sm:items-center sm:justify-between sm:p-8">
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">Your 30-day hair-care companion</p>
-            <h2 id="companion-app-title" className="mt-2 font-display text-2xl text-primary sm:text-3xl">Meet the 30-Day Hair Reset app</h2>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">Explore the app that helps you follow your hair-care plan day by day. It is included as a 30-day companion bonus when you purchase The 30-Day Hair Reset ebook.</p>
-          </div>
-          <a href="#main-ebook-offer" className="inline-flex shrink-0 items-center justify-center rounded-md border border-primary px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">Discover the app and ebook</a>
-        </div>
-      </section>
-      <section className="mx-auto mt-12 max-w-7xl px-4">
+
+      <section className="mx-auto mt-12 max-w-7xl px-4" aria-labelledby="collection-title">
         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div><p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">The Chequetto collection</p><h2 className="mt-2 font-display text-4xl text-primary md:text-5xl">More from Chequetto</h2></div>
+          <div><p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">The Chequetto editorial collection</p><h2 id="collection-title" className="mt-2 font-display text-4xl text-primary md:text-5xl">Explore the collection</h2><p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">Thoughtful guides and practical methods for every stage of your hair-care journey.</p></div>
           <Link to="/ebooks" className="text-sm font-semibold text-primary underline-offset-4 hover:underline">{t("viewAll")} →</Link>
         </div>
         <EbookGrid />
       </section>
+
       <section className="mx-auto mt-24 max-w-7xl px-4">
         <div className="mb-9 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div><p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">Notes & inspiration</p><h2 className="mt-2 font-display text-4xl text-primary md:text-5xl">{t("journal")}</h2></div>
