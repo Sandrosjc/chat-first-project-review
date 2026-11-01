@@ -87,7 +87,7 @@ export function FreeGuideBox() {
     if (submitting) return;
     setSubmitting(true);
     try {
-      await subscribeLead({ data: { email, language: lang, optedIn: consent, source: "free_guide" } });
+      await subscribeLead({ data: { email, language: lang, optedIn: consent } });
       setDone(true);
       toast.success(t("guideOk"));
     } catch (error) {
