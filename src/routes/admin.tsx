@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { listAdminEbooks, saveAdminEbook, deleteAdminEbook } from "@/lib/ebooks.functions";
+import { getFreeGuideUrl, saveFreeGuideUrl } from "@/lib/site-settings.functions";
 import { getAdminStats, listLeads, getPageViewStats } from "@/lib/leads.functions";
 import { toast } from "sonner";
 
@@ -23,6 +24,8 @@ function AdminPage() {
   const [form, setForm] = useState<Product>(empty);
   const [busy, setBusy] = useState(false);
   const [cover, setCover] = useState<File | null>(null);
+  const [freeGuideUrl, setFreeGuideUrl] = useState("");
+  const [guideUrlBusy, setGuideUrlBusy] = useState(false);
   const [stats, setStats] = useState<{ totalLeads: number; activeOptedIn: number; totalCampaigns: number; emailsSent: number } | null>(null);
   const [leads, setLeads] = useState<Array<{ id: string; email: string; language: string; source: string; opted_in: boolean; status: string; created_at: string }>>([]);
   const [dashboardError, setDashboardError] = useState("");
@@ -37,7 +40,7 @@ function AdminPage() {
     const { data } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
     return () => data.subscription.unsubscribe();
   }, []);
-  useEffect(() => { if (!session) return; void load(); Promise.all([getAdminStats(), listLeads(), getPageViewStats()]).then(([nextStats, nextLeads, nextVisitorStats]) => { setStats(nextStats); setLeads(nextLeads as typeof leads); setVisitorStats(nextVisitorStats); setDashboardError(""); }).catch((error) => { console.error("[admin] dashboard load failed", error); setDashboardError("Não foi possível carregar os indicadores e contatos."); }); }, [session]);
+  useEffect(() => { if (!session) return; void load(); getFreeGuideUrl().then(setFreeGuideUrl).catch(() => toast.error("Não foi possível carregar o link do guia.")); Promise.all([getAdminStats(), listLeads(), getPageViewStats()]).then(([nextStats, nextLeads, nextVisitorStats]) => { setStats(nextStats); setLeads(nextLeads as typeof leads); setVisitorStats(nextVisitorStats); setDashboardError(""); }).catch((error) => { console.error("[admin] dashboard load failed", error); setDashboardError("Não foi possível carregar os indicadores e contatos."); }); }, [session]);
 
   async function login(e: FormEvent) {
     e.preventDefault(); setBusy(true);
@@ -98,7 +101,7 @@ function AdminPage() {
     </section>
     <form onSubmit={save} className="mb-10 grid min-w-0 gap-4 rounded-xl border p-4 sm:p-5 md:grid-cols-2">
       <h2 className="font-display text-xl sm:text-2xl md:col-span-2">{form.id ? "Editar produto" : "Cadastrar produto"}</h2>
-      <p className="text-sm text-muted-foreground md:col-span-2">O catálogo público exibe três e-books pagos. Cadastre os três produtos definitivos e mantenha os links de compra atualizados.</p>
+      <p className="text-sm text-muted-foreground md:col-span-2">Cadastre até quatro ebooks pagos: um principal e três complementares. Cada produto deve ter os dois links de compra.</p>
       {field("Título","title",true)}{field("Identificador (slug)","slug",true)}{field("Subtítulo","subtitle")}{field("Preço","price",true)}
       <label className="grid gap-1 text-sm md:col-span-2">Descrição<textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} rows={4} className="min-w-0 rounded border bg-background p-2"/></label>
       <label className="grid gap-1 text-sm md:col-span-2">Imagem da capa<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>setCover(e.target.files?.[0] ?? null)} className="min-w-0 max-w-full"/></label>
@@ -106,6 +109,14 @@ function AdminPage() {
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_featured} onChange={e=>setForm({...form,is_featured:e.target.checked})}/>Destacar no site</label>
       <div className="flex flex-wrap gap-3 md:col-span-2"><button disabled={busy} className="rounded bg-primary px-5 py-3 text-primary-foreground">{busy ? "Salvando..." : "Salvar produto"}</button><button type="button" onClick={()=>{setForm(empty);setCover(null)}} className="rounded border px-5 py-3">Limpar</button></div>
     </form>
+    <section className="mb-10 rounded-xl border p-4 sm:p-5">
+      <h2 className="font-display text-xl sm:text-2xl">Link do guia gratuito (Payhip)</h2>
+      <p className="mt-1 text-sm text-muted-foreground">Cole aqui o endereço do produto gratuito no Payhip. Você poderá alterá-lo quando quiser.</p>
+      <form className="mt-4 flex flex-col gap-3 sm:flex-row" onSubmit={async (e)=>{e.preventDefault();setGuideUrlBusy(true);try{await saveFreeGuideUrl({data:{url:freeGuideUrl.trim()}});toast.success("Link do guia salvo.");}catch(err){toast.error(err instanceof Error?err.message:"Não foi possível salvar o link.");}finally{setGuideUrlBusy(false);}}}>
+        <input type="url" value={freeGuideUrl} onChange={e=>setFreeGuideUrl(e.target.value)} placeholder="https://payhip.com/..." className="min-w-0 flex-1 rounded border border-input bg-background p-3" />
+        <button disabled={guideUrlBusy} className="rounded bg-primary px-5 py-3 text-primary-foreground">{guideUrlBusy?"Salvando...":"Salvar link do guia"}</button>
+      </form>
+    </section>
     <h2 className="mb-4 font-display text-xl sm:text-2xl">Produtos cadastrados</h2><div className="grid gap-3">{products.map(p=><article key={p.id} className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded border p-3 sm:p-4"><div className="min-w-0"><strong className="break-words">{p.title}</strong><p className="break-all text-sm text-muted-foreground">{p.price} · {p.slug}</p></div><div className="flex shrink-0 gap-3"><button onClick={()=>setForm(p)} className="underline">Editar</button><button onClick={()=>void remove(p.id)} className="text-destructive underline">Excluir</button></div></article>)}</div>
   </main>;
 }
