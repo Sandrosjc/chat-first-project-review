@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroImg from "@/assets/hero.jpg";
 import { useI18n } from "@/lib/i18n";
-import { EbookGrid, FreeGuideBox, MainEbookFeature, PostGrid } from "@/components/site/Sections";
+import { AppAccessBox, EbookGrid, FreeGuideBox, MainEbookFeature, PostGrid } from "@/components/site/Sections";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,12 +34,7 @@ function Home() {
           <div className="flex min-w-0 flex-col gap-4">
             <div id="main-ebook-offer" className="scroll-mt-24"><MainEbookFeature /></div>
 
-            <section id="companion-app" aria-labelledby="companion-app-title" className="overflow-hidden rounded-2xl border border-gold/40 bg-secondary/60 p-5 shadow-soft sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">Your hair-care companion</p>
-              <h2 id="companion-app-title" className="mt-2 font-display text-2xl text-primary">The Chequetto Hair-Care App</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">A practical digital companion for your hair-care routine. Discover the app and access options.</p>
-              <a href="#main-ebook-offer" className="mt-4 inline-flex items-center justify-center rounded-md border border-primary px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">Discover the app</a>
-            </section>
+            <AppAccessBox />
 
             <div id="free-guide" className="scroll-mt-24"><FreeGuideBox /></div>
           </div>
