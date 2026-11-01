@@ -36,7 +36,21 @@ function Home() {
           </div>
           <div className="relative mx-auto w-full max-w-xl">
             <div className="absolute -inset-3 rotate-2 rounded-[2rem] border border-gold/40" />
-            <img src={heroImg} alt="Woman with long, healthy, glossy hair" width={1280} height={960} className="relative aspect-[4/4.2] w-full rounded-[1.6rem] object-cover shadow-soft" />
+            <div className="relative overflow-hidden rounded-[1.6rem] border border-gold/25 bg-secondary shadow-soft">
+              <video
+                className="aspect-[4/4.2] w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster={heroImg}
+                aria-label="Chequetto brand introduction"
+              >
+                <source src="/videos/chequetto-intro.mp4" type="video/mp4" />
+              </video>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
+            </div>
             <div className="absolute -bottom-5 -left-3 max-w-[80%] rounded-xl border border-border bg-card/95 p-4 shadow-soft backdrop-blur">
               <p className="font-display text-xl text-primary">Care that starts with knowledge.</p>
               <p className="mt-1 text-xs text-muted-foreground">Explore practical ways to care for your hair.</p>
