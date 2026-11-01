@@ -44,7 +44,7 @@ export function MainEbookFeature() {
     supabase.from("ebooks")
       .select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, is_free, is_featured")
       .eq("is_free", false)
-      .ilike("title", "%30-Day Hair Reset%")
+      .eq("is_main", true)
       .limit(1)
       .maybeSingle()
       .then(({ data, error }) => {
@@ -97,11 +97,11 @@ export function EbookGrid() {
   const [books, setBooks] = useState<CatalogBook[]>([]);
   useEffect(() => {
     let active = true;
-    supabase.from("ebooks").select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, download_url, is_free, is_featured")
-      .eq("is_free", false).order("is_featured", { ascending: false }).order("created_at", { ascending: false }).limit(10)
+    supabase.from("ebooks").select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, download_url, is_free, is_featured, is_main")
+      .eq("is_free", false).eq("is_main", false).order("is_featured", { ascending: false }).order("created_at", { ascending: false }).limit(10)
       .then(({ data, error }) => {
         if (!active || error) return;
-        setBooks(data.filter((book) => !book.title.toLowerCase().includes("30-day hair reset")).slice(0, 3).map((book, index) => ({
+        setBooks(data.slice(0, 3).map((book, index) => ({
           id: book.id, title: book.title, subtitle: book.subtitle ?? "",
           price: book.price ?? "", payhipUrl: book.payhip_url ?? "",
           googlePlayUrl: book.google_play_url ?? "", productUrl: book.product_url, coverImageUrl: book.cover_image_url,
@@ -169,7 +169,7 @@ export function AppAccessBox() {
       {registered ? (
         <div className="mt-4">
           <p className="text-sm font-medium text-primary">{lang === "pt" ? "Cadastro confirmado!" : "Registration confirmed!"}</p>
-          <a href="/app" className="mt-3 inline-flex items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">{lang === "pt" ? "Acessar aplicativo" : "Access the app"}</a>
+          <a href="https://chequetto.online/app" className="mt-3 inline-flex items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">{lang === "pt" ? "Acessar aplicativo" : "Access the app"}</a>
         </div>
       ) : (
         <form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
