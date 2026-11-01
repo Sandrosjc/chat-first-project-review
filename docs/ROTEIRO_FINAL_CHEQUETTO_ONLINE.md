@@ -8,7 +8,7 @@
 
 1. **Vídeo institucional/editorial:** bloco permanente na página inicial. Não é produto e não será cadastrado como ebook no painel. O arquivo real do vídeo ainda precisa ser fornecido/configurado; não substituir silenciosamente por uma imagem nem afirmar que já existe vídeo.
 2. **Ebook principal:** configurável pelo painel (capa, título, descrição, preço e links Payhip e Google Play Books).
-3. **Aplicativo externo:** apresentar um bloco próprio com imagem, texto curto e endereço de acesso configurável. O aplicativo é desenvolvido/conhecido fora deste site; aqui precisamos apenas oferecer o caminho para acessá-lo e captar o email de quem veio por esse caminho. Não reconstruir nem documentar o funcionamento interno do aplicativo nesta etapa.
+3. **Aplicativo web:** reservar um bloco próprio na página inicial para apresentar o aplicativo e iniciar o acesso. O visitante informa o email no cadastro desse bloco antes de receber acesso à aplicação web. O funcionamento interno do aplicativo fica fora do escopo desta etapa; por enquanto, basta deixar o espaço, o formulário e o ponto de entrada preparados.
 4. **Guia gratuito “Introdução aos 30 Dias”:** bloco e formulário próprios para captar email e entregar/encaminhar ao guia pelo destino configurado.
 5. **Três ebooks complementares:** exatamente três produtos pagos abaixo dos quatro blocos anteriores, sem repetir o ebook principal.
 6. **Blog/jornal:** preservar conteúdo editorial, navegação e chamadas para os produtos.
@@ -36,14 +36,14 @@
 - Confirmar edição dos dados do ebook principal e dos três complementares.
 - Manter o limite correto de três ebooks complementares, sem duplicar o principal.
 - Manter o campo administrativo do link Payhip do guia.
-- Criar/confirmar configurações administrativas separadas para imagem/texto/link externo do aplicativo.
+- Criar/confirmar configurações separadas para imagem e texto do bloco do aplicativo e o destino de acesso à aplicação web após o cadastro.
 - Validar URLs e manter o painel como fonte dos destinos.
 
 **Aceite:** administrador consegue atualizar os dados e destinos sem editar código.
 
 ### 2. Captura do guia e do aplicativo
 - Preservar o formulário atual do guia e sua origem `free_guide`.
-- Criar uma rota/formulário independente para o aplicativo, origem `app_access`.
+- Criar um formulário independente no bloco do aplicativo, origem `app_access`; após o cadastro bem-sucedido, encaminhar o visitante ao ponto de entrada da aplicação web quando o endereço estiver configurado.
 - Ajustar o armazenamento para que um mesmo email possa ter registros de captura para ambas as origens, sem apagar a origem anterior.
 - Exibir a origem no painel e permitir segmentação.
 - Preservar consentimento, descadastro e regras de envio já existentes.
@@ -53,7 +53,7 @@
 ### 3. Página inicial e hierarquia
 - Vídeo horizontal 16:9 em bloco próprio, quando o arquivo real estiver disponível.
 - Ebook principal com capa, descrição, preço e links de compra configurados.
-- Bloco do aplicativo com CTA para endereço externo e captura de email independente.
+- Bloco reservado ao aplicativo web, com apresentação breve, captura de email obrigatória antes do acesso e encaminhamento à aplicação após o cadastro.
 - Bloco do guia gratuito com captura independente.
 - Exibir exatamente três ebooks complementares abaixo, sem repetir o principal.
 - Preservar o blog/jornal e suas chamadas para ação.
@@ -88,7 +88,7 @@
 
 ### 8. Testes finais e publicação
 - Confirmar o arquivo real do vídeo e sua reprodução.
-- Testar links de ebooks, guia e aplicativo.
+- Testar links de ebooks e guia, além do cadastro do aplicativo e do encaminhamento à aplicação web.
 - Testar os dois formulários e a preservação das origens, inclusive email repetido.
 - Executar build, lint e testes disponíveis.
 - Revisar celular, acessibilidade, velocidade, SEO, metadados e domínio.
