@@ -7,6 +7,7 @@ const subscribeSchema = z.object({
   email: z.string().trim().email().max(255),
   language: z.enum(["en", "pt", "es", "fr", "de", "it", "nl", "ja", "zh"]).default("en"),
   optedIn: z.boolean().default(false),
+  source: z.enum(["free_guide", "app_access"]).default("free_guide"),
 });
 
 // Public endpoint: saves a free-guide subscriber. Runs with the service role
@@ -15,10 +16,11 @@ export const subscribeLead = createServerFn({ method: "POST" })
   .inputValidator((data) => subscribeSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.rpc("register_guide_lead", {
+    const { error } = await supabaseAdmin.rpc("register_site_lead", {
       p_email: data.email.trim().toLowerCase(),
       p_language: data.language,
       p_opted_in: data.optedIn,
+      p_source: data.source,
     });
 
     if (error) {
