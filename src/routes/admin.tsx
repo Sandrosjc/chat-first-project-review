@@ -9,10 +9,10 @@ import { toast } from "sonner";
 type Product = {
   id?: string; slug: string; title: string; subtitle: string; description: string;
   price: string; cover_image_url: string; product_url: string; payhip_url: string; google_play_url: string;
-  is_featured: boolean;
+  is_featured: boolean; is_main: boolean;
   is_free?: false;
 };
-const empty: Product = { slug:"", title:"", subtitle:"", description:"", price:"", cover_image_url:"", product_url:"", payhip_url:"", google_play_url:"", is_featured:false };
+const empty: Product = { slug:"", title:"", subtitle:"", description:"", price:"", cover_image_url:"", product_url:"", payhip_url:"", google_play_url:"", is_featured:false, is_main:false };
 
 export const Route = createFileRoute("/admin")({ component: AdminPage });
 
@@ -101,11 +101,12 @@ function AdminPage() {
     </section>
     <form onSubmit={save} className="mb-10 grid min-w-0 gap-4 rounded-xl border p-4 sm:p-5 md:grid-cols-2">
       <h2 className="font-display text-xl sm:text-2xl md:col-span-2">{form.id ? "Editar produto" : "Cadastrar produto"}</h2>
-      <p className="text-sm text-muted-foreground md:col-span-2">Cadastre até quatro ebooks pagos: um principal e três complementares. Cada produto deve ter os dois links de compra.</p>
+      <p className="text-sm text-muted-foreground md:col-span-2">Cadastre um ebook principal e até três ebooks complementares. Selecione a categoria de cada produto; o principal não ocupa uma das três vagas complementares.</p>
       {field("Título","title",true)}{field("Identificador (slug)","slug",true)}{field("Subtítulo","subtitle")}{field("Preço","price",true)}
       <label className="grid gap-1 text-sm md:col-span-2">Descrição<textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} rows={4} className="min-w-0 rounded border bg-background p-2"/></label>
       <label className="grid gap-1 text-sm md:col-span-2">Imagem da capa<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>setCover(e.target.files?.[0] ?? null)} className="min-w-0 max-w-full"/></label>
       {field("Link de compra Payhip","payhip_url",true)}{field("Link Google Play Books","google_play_url",true)}
+      <label className="grid gap-1 text-sm">Categoria do produto<select value={form.is_main ? "main" : "complementary"} onChange={e=>setForm({...form,is_main:e.target.value === "main"})} className="rounded border bg-background p-2"><option value="main">Ebook principal</option><option value="complementary">Ebook complementar</option></select></label>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_featured} onChange={e=>setForm({...form,is_featured:e.target.checked})}/>Destacar no site</label>
       <div className="flex flex-wrap gap-3 md:col-span-2"><button disabled={busy} className="rounded bg-primary px-5 py-3 text-primary-foreground">{busy ? "Salvando..." : "Salvar produto"}</button><button type="button" onClick={()=>{setForm(empty);setCover(null)}} className="rounded border px-5 py-3">Limpar</button></div>
     </form>
@@ -117,6 +118,6 @@ function AdminPage() {
         <button disabled={guideUrlBusy} className="rounded bg-primary px-5 py-3 text-primary-foreground">{guideUrlBusy?"Salvando...":"Salvar link do guia"}</button>
       </form>
     </section>
-    <h2 className="mb-4 font-display text-xl sm:text-2xl">Produtos cadastrados</h2><div className="grid gap-3">{products.map(p=><article key={p.id} className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded border p-3 sm:p-4"><div className="min-w-0"><strong className="break-words">{p.title}</strong><p className="break-all text-sm text-muted-foreground">{p.price} · {p.slug}</p></div><div className="flex shrink-0 gap-3"><button onClick={()=>setForm(p)} className="underline">Editar</button><button onClick={()=>void remove(p.id)} className="text-destructive underline">Excluir</button></div></article>)}</div>
+    <h2 className="mb-4 font-display text-xl sm:text-2xl">Produtos cadastrados</h2><div className="grid gap-3">{products.map(p=><article key={p.id} className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded border p-3 sm:p-4"><div className="min-w-0"><strong className="break-words">{p.title}</strong><p className="break-all text-sm text-muted-foreground">{p.is_main ? "Principal" : "Complementar"} · {p.price} · {p.slug}</p></div><div className="flex shrink-0 gap-3"><button onClick={()=>setForm(p)} className="underline">Editar</button><button onClick={()=>void remove(p.id)} className="text-destructive underline">Excluir</button></div></article>)}</div>
   </main>;
 }
