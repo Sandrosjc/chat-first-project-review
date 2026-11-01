@@ -21,6 +21,7 @@ const schema = z.object({
   google_play_url: z.string().url(),
 
   is_featured: z.boolean().default(false),
+  is_main: z.boolean().default(false),
   is_free: z.literal(false).default(false),
 }).superRefine((v, ctx) => {
   if (!v.price.trim()) ctx.addIssue({ code: "custom", path: ["price"], message: "Informe o preço do e-book." });
@@ -32,7 +33,7 @@ export const listAdminEbooks = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { data, error } = await context.supabase.from("ebooks")
-      .select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, is_free, is_featured, created_at")
+      .select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, is_free, is_featured, is_main, created_at")
       .order("created_at", { ascending: false });
     if (error) throw new Error("Não foi possível carregar os produtos.");
     return data ?? [];
@@ -45,19 +46,19 @@ export const saveAdminEbook = createServerFn({ method: "POST" })
     await assertAdmin(context.supabase, context.userId);
     const { id, ...values } = data;
 
-    // The public catalogue is intentionally limited to three paid ebooks.
-    // Enforce the limit on the server so extra items cannot be silently hidden.
-    if (!id) {
+    // Only complementary paid ebooks count toward the three-item catalogue limit.
+    if (!id && !data.is_main) {
       const { count, error: countError } = await context.supabase
         .from("ebooks")
         .select("id", { count: "exact", head: true })
-        .eq("is_free", false);
+        .eq("is_free", false)
+        .eq("is_main", false);
       if (countError) {
         console.error("[ebooks] catalogue limit check failed", countError);
         throw new Error("Não foi possível verificar o limite do catálogo.");
       }
       if ((count ?? 0) >= 3) {
-        throw new Error("O catálogo permite somente três e-books pagos. Edite um produto existente.");
+        throw new Error("O catálogo permite um ebook principal e três complementares. Edite um produto existente.");
       }
     }
 
