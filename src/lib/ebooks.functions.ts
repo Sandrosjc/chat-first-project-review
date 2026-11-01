@@ -62,6 +62,12 @@ export const saveAdminEbook = createServerFn({ method: "POST" })
       }
     }
 
+    if (data.is_main) {
+      const { error: unsetError } = await context.supabase.from("ebooks")
+        .update({ is_main: false }).eq("is_free", false).eq("is_main", true);
+      if (unsetError) throw new Error("Não foi possível atualizar o ebook principal.");
+    }
+
     const result = id
       ? await context.supabase.from("ebooks").update(values).eq("id", id).select("id").single()
       : await context.supabase.from("ebooks").insert(values).select("id").single();
