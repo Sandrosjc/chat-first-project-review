@@ -70,21 +70,24 @@ export const getAdminStats = createServerFn({ method: "GET" })
     };
   });
 
-// Admin-only: latest leads for the dashboard table.
+// Admin-only: latest signup captures, retaining one row per email and source.
 export const listLeads = createServerFn({ method: "GET" })
   .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { data, error } = await context.supabase
-      .from("leads")
-      .select("id, email, first_name, language, source, opted_in, status, created_at")
-      .order("created_at", { ascending: false })
-      .limit(100);
-    if (error) {
-      console.error("[leads] list failed", error);
+    const [{ data: captures, error: captureError }, { data: contacts, error: contactError }] = await Promise.all([
+      context.supabase.from("lead_captures").select("id, email, language, source, created_at").order("created_at", { ascending: false }).limit(100),
+      context.supabase.from("leads").select("email, opted_in, status"),
+    ]);
+    if (captureError || contactError) {
+      console.error("[leads] capture list failed", captureError ?? contactError);
       throw new Error("Could not load leads.");
     }
-    return data ?? [];
+    const byEmail = new Map((contacts ?? []).map((contact: { email: string; opted_in: boolean; status: string }) => [contact.email, contact]));
+    return (captures ?? []).map((capture: { id: string; email: string; language: string; source: string; created_at: string }) => {
+      const contact = byEmail.get(capture.email);
+      return { ...capture, first_name: null, opted_in: contact?.opted_in ?? false, status: contact?.status ?? "unknown" };
+    });
   });
 
 
