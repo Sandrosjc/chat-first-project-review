@@ -120,18 +120,22 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
+function PageViewTracker() {
   const location = useLocation();
   const { lang } = useI18n();
   useEffect(() => {
     void recordPageView({ data: { path: location.pathname, language: lang } });
   }, [location.pathname, lang]);
+  return null;
+}
 
+function RootComponent() {
+  const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <I18nProvider>
+        <PageViewTracker />
         <SiteHeader />
         <main><Outlet /></main>
         <SiteFooter />
