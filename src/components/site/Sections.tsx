@@ -33,15 +33,73 @@ export function EbookCard({ book }: { book: CatalogBook }) {
   );
 }
 
+export function MainEbookFeature() {
+  const [book, setBook] = useState<CatalogBook | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { t } = useI18n();
+
+  useEffect(() => {
+    let active = true;
+    supabase.from("ebooks")
+      .select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, is_free, is_featured")
+      .eq("is_free", false)
+      .ilike("title", "%30-Day Hair Reset%")
+      .limit(1)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) console.error("[catalog] main ebook load failed", error);
+        if (data) setBook({
+          id: data.id, title: data.title, subtitle: data.subtitle ?? "",
+          price: data.price ?? "", payhipUrl: data.payhip_url ?? "",
+          googlePlayUrl: data.google_play_url ?? "", productUrl: data.product_url,
+          coverImageUrl: data.cover_image_url, description: data.description ?? "",
+          tone: "primary",
+        });
+        setLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
+
+  if (loading) return <div className="animate-pulse rounded-xl bg-secondary/60 p-6" aria-label="Loading featured ebook" />;
+  if (!book) return (
+    <div className="rounded-xl border border-dashed border-gold/50 bg-card p-5">
+      <p className="font-display text-2xl text-primary">The 30-Day Hair Reset</p>
+      <p className="mt-2 text-sm text-muted-foreground">The featured ebook is being prepared. Its purchase link will appear here when the product is configured.</p>
+    </div>
+  );
+
+  return (
+    <article className="grid grid-cols-[104px_1fr] gap-4 rounded-xl border border-gold/40 bg-card p-4 shadow-soft sm:grid-cols-[128px_1fr] sm:p-5">
+      {book.coverImageUrl ? (
+        <img src={book.coverImageUrl} alt={`Cover of ${book.title}`} className="aspect-[3/4] w-full rounded-lg object-cover" />
+      ) : (
+        <div className="flex aspect-[3/4] items-center justify-center rounded-lg bg-primary p-3 text-center font-display text-lg text-primary-foreground">The 30-Day Hair Reset</div>
+      )}
+      <div className="flex min-w-0 flex-col justify-center">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Chequetto featured method</p>
+        <h2 className="mt-2 font-display text-2xl leading-tight text-primary sm:text-3xl">{book.title}</h2>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">{book.description || book.subtitle}</p>
+        {book.price && <p className="mt-3 font-semibold text-primary">{book.price}</p>}
+        {book.payhipUrl ? (
+          <a href={book.payhipUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex justify-center rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:opacity-90">{t("buyPayhip")}</a>
+        ) : <p className="mt-3 text-xs text-muted-foreground">Purchase link will be available soon.</p>}
+        {book.googlePlayUrl && <a href={book.googlePlayUrl} target="_blank" rel="noopener noreferrer" className="mt-2 text-center text-xs font-medium text-primary underline">{t("googlePlay")}</a>}
+        <p className="mt-2 text-xs text-muted-foreground">Includes the 30-day companion app as a purchase bonus.</p>
+      </div>
+    </article>
+  );
+}
+
 export function EbookGrid() {
   const [books, setBooks] = useState<CatalogBook[]>([]);
   useEffect(() => {
     let active = true;
     supabase.from("ebooks").select("id, slug, title, subtitle, description, price, cover_image_url, product_url, payhip_url, google_play_url, download_url, is_free, is_featured")
-      .eq("is_free", false).order("is_featured", { ascending: false }).order("created_at", { ascending: false }).limit(3)
+      .eq("is_free", false).order("is_featured", { ascending: false }).order("created_at", { ascending: false }).limit(10)
       .then(({ data, error }) => {
         if (!active || error) return;
-        setBooks(data.map((book, index) => ({
+        setBooks(data.filter((book) => !book.title.toLowerCase().includes("30-day hair reset")).slice(0, 3).map((book, index) => ({
           id: book.id, title: book.title, subtitle: book.subtitle ?? "",
           price: book.price ?? "", payhipUrl: book.payhip_url ?? "",
           googlePlayUrl: book.google_play_url ?? "", productUrl: book.product_url, coverImageUrl: book.cover_image_url,
