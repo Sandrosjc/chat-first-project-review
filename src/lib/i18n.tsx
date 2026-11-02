@@ -1,15 +1,10 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export const LANGS = [
-  { code: "en", label: "English" },
-  { code: "pt", label: "Português" },
-  { code: "es", label: "Español" },
-  { code: "fr", label: "Français" },
-  { code: "de", label: "Deutsch" },
-  { code: "it", label: "Italiano" },
-  { code: "nl", label: "Nederlands" },
-  { code: "ja", label: "日本語" },
-  { code: "zh", label: "中文" },
+  { code: "en", label: "🇺🇸 English" },
+  { code: "pt", label: "🇧🇷 Português" },
+  { code: "es", label: "🇪🇸 Español" },
+  { code: "de", label: "🇩🇪 Deutsch" },
 ] as const;
 
 export type Lang = (typeof LANGS)[number]["code"];
@@ -46,7 +41,7 @@ const T: Record<Lang, Dict> = {
   zh: { ...en, guideText: "五个让头发更强韧、更有光泽的日常习惯。登记电子邮箱，待指南开放发送后即可接收。", guideOk: "您的邮箱已登记。指南发送服务即将开放。", consent: "我同意偶尔接收 Chequetto 的邮件。可随时取消订阅。", home: "首页", ebooks: "电子书", blog: "博客", about: "关于", contact: "联系", search: "搜索", heroTitle: "健康秀发，更多自信", explore: "浏览我们的电子书", guideTitle: "免费10页指南", emailPh: "您的电子邮箱", getGuide: "发送指南给我", featured: "精选电子书", buyPayhip: "在 Payhip 购买", journal: "护发日志", readMore: "阅读文章", viewAll: "查看全部" },
 };
 
-/** Maps a browser locale (e.g. "pt-BR") to one of the 9 site languages; English is the fallback. */
+/** Selects one of the four launch languages from the browser locale; English is the fallback. */
 export function detectLang(locale: string | undefined): Lang {
   const code = (locale ?? "en").slice(0, 2).toLowerCase();
   return (LANGS.find((l) => l.code === code)?.code ?? "en") as Lang;
@@ -60,7 +55,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
   useEffect(() => {
     const saved = localStorage.getItem("chequetto-lang");
-    setLangState(saved ? detectLang(saved) : detectLang(navigator.language));
+    // First visit: infer language from the browser's regional locale. A saved visitor choice always wins.
+    setLangState(saved ? detectLang(saved) : detectLang(navigator.languages?.[0] || navigator.language));
   }, []);
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
   const setLang = (l: Lang) => { localStorage.setItem("chequetto-lang", l); setLangState(l); };
