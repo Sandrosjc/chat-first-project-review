@@ -52,8 +52,8 @@ export function MainEbookFeature() {
         if (error) console.error("[catalog] main ebook load failed", error);
         if (data) setBook({
           id: data.id, title: data.title, subtitle: data.subtitle ?? "",
-          price: data.price ?? "", payhipUrl: data.payhip_url ?? "",
-          googlePlayUrl: data.google_play_url ?? "", productUrl: data.product_url,
+          price: data.price || "US$ 9.90", payhipUrl: data.payhip_url || "https://payhip.com/b/ryRpx",
+          googlePlayUrl: data.google_play_url || "https://books.google.com.br/books/about?id=lB4PEgAAQBAJ&redir_esc=y", productUrl: data.product_url,
           coverImageUrl: data.cover_image_url, description: data.description ?? "",
           tone: "primary",
         });
@@ -65,8 +65,18 @@ export function MainEbookFeature() {
   if (loading) return <div className="animate-pulse rounded-xl bg-secondary/60 p-6" aria-label="Loading featured ebook" />;
   if (!book) return (
     <div className="rounded-xl border border-dashed border-gold/50 bg-card p-5">
-      <p className="font-display text-2xl text-primary">The 30-Day Hair Reset</p>
-      <p className="mt-2 text-sm text-muted-foreground">The featured ebook is being prepared. Its purchase link will appear here when the product is configured.</p>
+      <div className="grid gap-4 sm:grid-cols-[120px_1fr] sm:items-center">
+        <div className="flex aspect-[3/4] items-center justify-center rounded-lg bg-[#14231d] p-3 text-center font-display text-xl text-[#e6c77f]">Hair Loss Reset</div>
+        <div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Chequetto · 30-day protocol</p>
+          <p className="mt-2 font-display text-2xl text-primary">Hair Loss Reset</p>
+          <p className="mt-2 text-sm text-muted-foreground">The 30-Day Scalp Reset Protocol to Stop Stress-Related Hair Loss and Restore Healthy Growth.</p>
+          <p className="mt-3 font-semibold text-primary">US$ 9.90</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            <a href="https://payhip.com/b/ryRpx" target="_blank" rel="noopener noreferrer" className="rounded-md bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground">Buy on Payhip</a>
+            <a href="https://books.google.com.br/books/about?id=lB4PEgAAQBAJ&redir_esc=y" target="_blank" rel="noopener noreferrer" className="rounded-md border border-primary px-4 py-3 text-center text-sm font-semibold text-primary">Google Play Books</a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 
@@ -193,7 +203,7 @@ export function FreeGuideBox() {
     if (submitting) return;
     setSubmitting(true);
     try {
-      const guideUrl = await getFreeGuideUrl();
+      const guideUrl = (await getFreeGuideUrl()) || "https://payhip.com/buy?s=1&cart_links%5B%5D=vZLbx&qty%5BvZLbx%5D=1";
       if (!guideUrl) throw new Error(lang === "pt" ? "O link do guia ainda não foi configurado. Tente novamente mais tarde." : "The guide link is not configured yet. Please try again later.");
       await subscribeLead({ data: { email, language: lang, optedIn: consent } });
       setDone(true);
