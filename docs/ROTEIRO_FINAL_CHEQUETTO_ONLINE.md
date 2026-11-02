@@ -106,3 +106,22 @@ Uma etapa por vez: inspecionar o código atual, implementar mudanças incrementa
 - [ ] Etapa 6 — Email, leads e campanhas
 - [ ] Etapa 7 — Painel, métricas e operação
 - [ ] Etapa 8 — Testes finais e publicação
+
+
+## Links oficiais aprovados pelo autor — produto principal
+
+**Atualizado em 2026-11-02.** Estes são os únicos destinos comerciais e de acesso aprovados para os blocos correspondentes da página. Não substituir, abreviar, redirecionar ou inventar destinos sem nova autorização.
+
+- **Ebook principal:** *Hair Loss Reset*
+- **Preço informado pelo autor:** US$ 9.90 (confirmar que o preço efetivo está configurado na Payhip e no Google Play Books; o link por si só não comprova preço).
+- **Payhip — compra do ebook principal:** https://payhip.com/b/ryRpx
+- **Google Play Books — ebook principal:** https://books.google.com.br/books/about?id=lB4PEgAAQBAJ&redir_esc=y
+- **Guia gratuito / introdução — destino Payhip fornecido:** https://payhip.com/buy?s=1&cart_links%5B%5D=vZLbx&qty%5BvZLbx%5D=1
+- **Aplicativo Chequetto:** https://chequetto.online/app
+
+### Regras de uso desses links
+1. O CTA do ebook principal oferece os dois canais de compra: Payhip e Google Play Books, sem apresentar um como outro.
+2. O CTA do guia usa exatamente o endereço Payhip acima. Confirmar que o checkout está intencionalmente gratuito ou com o valor correto antes de divulgar como “grátis”, pois o URL é um link de compra e não prova o preço.
+3. O bloco do aplicativo usa o endereço fornecido acima, mas a rota precisa ser testada no domínio de produção antes de declarar o acesso funcional.
+4. Os links Payhip dos três ebooks complementares ainda não foram fornecidos aqui; não criar links fictícios nem reaproveitar o do principal.
+5. A documentação registra os destinos aprovados; a implementação deve manter links de produto administráveis quando houver campos no painel, sem duplicar destinos fixos no código.
