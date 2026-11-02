@@ -20,7 +20,7 @@ export function SiteHeader() {
         <div className="order-2 flex items-center gap-3 lg:order-3">
           <label className="flex items-center gap-1 text-sm text-muted-foreground">
             <Globe className="h-4 w-4" aria-hidden />
-            <select aria-label="Language" value={lang} onChange={(e) => setLang(e.target.value as Lang)} className="bg-transparent text-foreground outline-none">
+            <select aria-label="Choose language / Elegir idioma / Sprache wählen" value={lang} onChange={(e) => setLang(e.target.value as Lang)} className="bg-transparent text-foreground outline-none">
               {LANGS.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
             </select>
           </label>
