@@ -56,11 +56,11 @@ function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:pt-14" aria-label={pt ? "Oferta principal" : "Featured offer"}>
+      <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:pt-14" aria-label={lang === "pt" ? "Oferta principal" : "Featured offer"}>
         <div id="main-ebook-offer" className="scroll-mt-24">
           <div className="mb-5 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">{t("featured")}</p>
-            <h2 className="mt-2 font-display text-3xl text-primary sm:text-4xl">{pt ? "Hair Loss Reset" : "Hair Loss Reset"}</h2>
+            <h2 className="mt-2 font-display text-3xl text-primary sm:text-4xl">Hair Loss Reset</h2>
             <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">{t("mainSubtitle")}</p>
           </div>
           <MainEbookFeature />
