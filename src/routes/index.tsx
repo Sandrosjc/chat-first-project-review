@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { t, lang } = useI18n();
-  const pt = lang === "pt";
+
   return (
     <>
       <section className="relative isolate overflow-hidden bg-[#101b17] text-white">
@@ -26,30 +26,30 @@ function Home() {
           <div className="relative z-10">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#e5c47d]">CH E Q U E T T O · HAIR CARE</p>
             <h1 className="mt-5 max-w-2xl font-display text-4xl leading-[1.06] sm:text-5xl lg:text-6xl">
-              {pt ? "Um novo começo para o cuidado com seus cabelos." : "A fresh start for your hair-care journey."}
+              {t("heroTitle")}
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-white/75 sm:text-lg">
-              {pt ? "Conheça o Hair Loss Reset, acompanhe sua rotina no aplicativo Chequetto ou comece gratuitamente com a introdução ao plano de 30 dias." : "Discover Hair Loss Reset, follow your routine with the Chequetto app, or start free with the 30-day plan introduction."}
+              {t("heroText")}
             </p>
             <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
               <a href="#main-ebook-offer" className="rounded-lg bg-[#d7b66f] px-4 py-3 text-center text-sm font-bold text-[#17221d] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#e7ca8b]">
-                {pt ? "Comprar ebook" : "Get the ebook"}
+                {t("buyPayhip")}
               </a>
               <a href="#companion-app" className="rounded-lg border border-white/35 bg-white/5 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10">
-                {pt ? "Acessar aplicativo" : "Open the app"}
+                {t("appOpen")}
               </a>
               <a href="#free-guide" className="rounded-lg border border-[#d7b66f]/70 px-4 py-3 text-center text-sm font-semibold text-[#f1d99f] transition hover:bg-white/10">
-                {pt ? "Começar grátis" : "Start for free"}
+                {t("freeButton")}
               </a>
             </div>
             <p className="mt-5 text-xs tracking-wide text-white/55">
-              {pt ? "Escolha seu caminho. Comece no seu ritmo." : "Choose your path. Start at your own pace."}
+              {t("choosePath")}
             </p>
           </div>
           <div className="relative">
             <div className="absolute -inset-3 rounded-[2rem] border border-[#d7b66f]/30" />
             <div className="relative overflow-hidden rounded-2xl border border-[#d7b66f]/40 shadow-2xl">
-              <img src={heroImg} alt={pt ? "Editorial Chequetto sobre cuidado capilar" : "Chequetto hair-care editorial"} className="aspect-[4/3] w-full object-cover" fetchPriority="high" />
+              <img src={heroImg} alt={t("heroKicker")} className="aspect-[4/3] w-full object-cover" fetchPriority="high" />
             </div>
             <p className="mt-3 text-center text-[10px] font-medium uppercase tracking-[0.24em] text-[#e5c47d]">A thoughtful approach to healthy-looking hair</p>
           </div>
@@ -59,9 +59,9 @@ function Home() {
       <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:pt-14" aria-label={pt ? "Oferta principal" : "Featured offer"}>
         <div id="main-ebook-offer" className="scroll-mt-24">
           <div className="mb-5 text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">{pt ? "O método em destaque" : "The featured method"}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">{t("featured")}</p>
             <h2 className="mt-2 font-display text-3xl text-primary sm:text-4xl">{pt ? "Hair Loss Reset" : "Hair Loss Reset"}</h2>
-            <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">{pt ? "O protocolo de 30 dias para organizar uma rotina de cuidado do couro cabeludo." : "A 30-day protocol to help you build a more intentional scalp-care routine."}</p>
+            <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">{t("mainSubtitle")}</p>
           </div>
           <MainEbookFeature />
         </div>
@@ -74,7 +74,7 @@ function Home() {
 
       <section className="mx-auto mt-20 max-w-7xl px-4 sm:px-6" aria-labelledby="collection-title">
         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div><p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">The Chequetto editorial collection</p><h2 id="collection-title" className="mt-2 font-display text-4xl text-primary md:text-5xl">{pt ? "Continue explorando" : "Explore the collection"}</h2><p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">{pt ? "Guias complementares para diferentes etapas da sua jornada de cuidado capilar." : "Thoughtful guides for every stage of your hair-care journey."}</p></div>
+          <div><p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">The Chequetto editorial collection</p><h2 id="collection-title" className="mt-2 font-display text-4xl text-primary md:text-5xl">{t("explore")}</h2><p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">{t("featured")}</p></div>
           <Link to="/ebooks" className="text-sm font-semibold text-primary underline-offset-4 hover:underline">{t("viewAll")} →</Link>
         </div>
         <EbookGrid />
@@ -82,7 +82,7 @@ function Home() {
 
       <section className="mx-auto mt-20 max-w-7xl px-4 pb-16 sm:px-6">
         <div className="mb-9 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div><p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">{pt ? "Conhecimento e inspiração" : "Knowledge & inspiration"}</p><h2 className="mt-2 font-display text-4xl text-primary md:text-5xl">{t("journal")}</h2></div>
+          <div><p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">{t("journal")}</p><h2 className="mt-2 font-display text-4xl text-primary md:text-5xl">{t("journal")}</h2></div>
           <Link to="/blog" className="text-sm font-semibold text-primary underline-offset-4 hover:underline">{t("viewAll")} →</Link>
         </div>
         <PostGrid />
