@@ -125,3 +125,12 @@ Uma etapa por vez: inspecionar o código atual, implementar mudanças incrementa
 3. O bloco do aplicativo usa o endereço fornecido acima, mas a rota precisa ser testada no domínio de produção antes de declarar o acesso funcional.
 4. Os links Payhip dos três ebooks complementares ainda não foram fornecidos aqui; não criar links fictícios nem reaproveitar o do principal.
 5. A documentação registra os destinos aprovados; a implementação deve manter links de produto administráveis quando houver campos no painel, sem duplicar destinos fixos no código.
+
+
+### QR Code oficial do aplicativo
+
+- **Arquivo recebido:** `QR-chequetto-online-app.png` (984 × 984 px).
+- **Conteúdo decodificado e confirmado:** https://chequetto.online/app
+- **Uso aprovado:** bloco de acesso ao aplicativo e materiais promocionais do Chequetto.online.
+- **Destino:** é o mesmo endereço já registrado para o botão de acesso ao aplicativo; o QR não representa um endereço diferente.
+- **Observação:** o QR foi lido com sucesso. Isso confirma o endereço codificado, não a disponibilidade da página de destino em produção.
