@@ -146,7 +146,7 @@ export function PostGrid() {
 const emailSchema = z.string().trim().email().max(255);
 
 export function AppAccessBox() {
-  const { lang } = useI18n();
+  const { lang, t } = useI18n();
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [registered, setRegistered] = useState(false);
@@ -154,7 +154,7 @@ export function AppAccessBox() {
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (!emailSchema.safeParse(email).success) {
-      toast.error(lang === "pt" ? "Informe um e-mail válido." : "Please enter a valid email.");
+      toast.error(t("emailPh"));
       return;
     }
     if (submitting) return;
@@ -162,7 +162,7 @@ export function AppAccessBox() {
     try {
       await subscribeLead({ data: { email, language: lang, optedIn: false, source: "app_access" } });
       setRegistered(true);
-      toast.success(lang === "pt" ? "Cadastro realizado. Agora você pode acessar o aplicativo." : "Registration complete. You can now access the app.");
+      toast.success(t("appOpen"));
     } catch (error) {
       console.error("[app access] registration failed", error);
       toast.error(lang === "pt" ? "Não foi possível registrar seu e-mail. Tente novamente." : "We couldn't register your email. Please try again.");
@@ -173,18 +173,18 @@ export function AppAccessBox() {
 
   return (
     <section id="companion-app" aria-labelledby="companion-app-title" className="overflow-hidden rounded-2xl border border-gold/40 bg-secondary/60 p-5 shadow-soft sm:p-6">
-      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">Your hair-care companion</p>
-      <h2 id="companion-app-title" className="mt-2 font-display text-2xl text-primary">The Chequetto Hair-Care App</h2>
-      <p className="mt-2 text-sm leading-6 text-muted-foreground">{lang === "pt" ? "Cadastre seu e-mail para liberar o acesso ao aplicativo." : "Register your email to unlock access to the app."}</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">{t("choosePath")}</p>
+      <h2 id="companion-app-title" className="mt-2 font-display text-2xl text-primary">{t("appTitle")}</h2>
+      <p className="mt-2 text-sm leading-6 text-muted-foreground">{t("appText")}</p>
       {registered ? (
         <div className="mt-4">
-          <p className="text-sm font-medium text-primary">{lang === "pt" ? "Cadastro confirmado!" : "Registration confirmed!"}</p>
-          <a href="https://chequetto.online/app" className="mt-3 inline-flex items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">{lang === "pt" ? "Acessar aplicativo" : "Access the app"}</a>
+          <p className="text-sm font-medium text-primary">{t("appOpen")}</p>
+          <a href="https://chequetto.online/app" className="mt-3 inline-flex items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">{t("appOpen")}</a>
         </div>
       ) : (
         <form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
-          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={lang === "pt" ? "Seu melhor e-mail" : "Your email address"} className="min-w-0 rounded-md border border-input bg-background px-4 py-3 outline-none focus:border-primary" />
-          <button type="submit" disabled={submitting} className="rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60">{submitting ? (lang === "pt" ? "Enviando..." : "Submitting...") : (lang === "pt" ? "Cadastrar e liberar acesso" : "Register and unlock access")}</button>
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("emailPh")} className="min-w-0 rounded-md border border-input bg-background px-4 py-3 outline-none focus:border-primary" />
+          <button type="submit" disabled={submitting} className="rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60">{submitting ? (t("send")) : (t("appButton"))}</button>
         </form>
       )}
     </section>
@@ -222,18 +222,18 @@ export function FreeGuideBox() {
         <div className="pointer-events-none absolute -right-12 -top-12 h-56 w-56 rounded-full border border-gold/30" />
         <div className="pointer-events-none absolute -bottom-24 -left-12 h-56 w-56 rounded-full border border-gold/20" />
         <p className="relative text-xs font-semibold uppercase tracking-[0.25em] text-gold">FREE MINI E-BOOK · PDF</p>
-        <p className="relative mt-5 max-w-xs font-display text-4xl leading-tight md:text-5xl">A gentle start for your hair-care journey.</p>
-        <p className="relative mt-4 text-sm text-secondary-foreground/75">A practical gift from Chequetto.</p>
+        <p className="relative mt-5 max-w-xs font-display text-4xl leading-tight md:text-5xl">{t("freeTitle")}</p>
+        <p className="relative mt-4 text-sm text-secondary-foreground/75">{t("freeText")}</p>
       </div>
       <div className="p-8 md:p-10">
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">Your complimentary guide</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">{t("freeTitle")}</p>
       <h2 className="mt-3 font-display text-3xl text-primary md:text-4xl">{t("guideTitle")}</h2>
       <p className="mt-3 max-w-xl leading-7 text-muted-foreground">{t("guideText")}</p>
       {done ? <p className="mt-6 font-medium text-secondary">{t("guideOk")}</p> : (
         <form onSubmit={submit} className="mt-6 grid gap-3">
           <div className="flex flex-col gap-3 sm:flex-row">
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("emailPh")} className="min-w-0 flex-1 rounded-md border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/10" />
-            <button type="submit" disabled={submitting} className="download-cta-pulse rounded-md bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-soft transition-all hover:-translate-y-0.5 hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60">{submitting ? (lang === "pt" ? "Enviando..." : "Sending...") : t("getGuide")}</button>
+            <button type="submit" disabled={submitting} className="download-cta-pulse rounded-md bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-soft transition-all hover:-translate-y-0.5 hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60">{submitting ? (t("send")) : t("getGuide")}</button>
           </div>
           <label className="flex items-start gap-2 text-xs text-muted-foreground">
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 accent-primary" />
