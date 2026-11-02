@@ -66,7 +66,7 @@ export function MainEbookFeature() {
   if (!book) return (
     <div className="rounded-xl border border-dashed border-gold/50 bg-card p-5">
       <div className="grid gap-4 sm:grid-cols-[120px_1fr] sm:items-center">
-        <div className="flex aspect-[3/4] items-center justify-center rounded-lg bg-[#14231d] p-3 text-center font-display text-xl text-[#e6c77f]">Hair Loss Reset</div>
+        <img src="https://books.google.com/books/content?id=lB4PEgAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="Hair Loss Reset ebook cover" className="aspect-[3/4] w-full rounded-lg object-cover" />
         <div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Chequetto · 30-day protocol</p>
           <p className="mt-2 font-display text-2xl text-primary">Hair Loss Reset</p>
           <p className="mt-2 text-sm text-muted-foreground">The 30-Day Scalp Reset Protocol to Stop Stress-Related Hair Loss and Restore Healthy Growth.</p>
@@ -85,7 +85,7 @@ export function MainEbookFeature() {
       {book.coverImageUrl ? (
         <img src={book.coverImageUrl} alt={`Cover of ${book.title}`} className="aspect-[3/4] w-full rounded-lg object-cover" />
       ) : (
-        <div className="flex aspect-[3/4] items-center justify-center rounded-lg bg-primary p-3 text-center font-display text-lg text-primary-foreground">The 30-Day Hair Reset</div>
+        <img src="https://books.google.com/books/content?id=lB4PEgAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="Hair Loss Reset ebook cover" className="aspect-[3/4] w-full rounded-lg object-cover" />
       )}
       <div className="flex min-w-0 flex-col justify-center">
         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Chequetto featured method</p>
